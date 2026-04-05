@@ -3,8 +3,3 @@ body{
     min-height: 100vh;
     background: linear-gradient(45deg, #232323, #ff8800);
 }
-
-.header{
-    font-weight: bold;
-    font-size: larger;
-}

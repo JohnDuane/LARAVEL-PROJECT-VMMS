@@ -14,9 +14,8 @@
         <div class="row justify-content-end w-100">
             <div class="col-12 col-lg-6">
                 <div class="card p-4">
-                    <img style="width: 150px; height: 170px;" src="{{ asset('images/LOGO-DARk.png') }}" alt="logo">
-                    <h3 class="text-center mb-3">Login</h3>
-                    <input type="text" class="form-control mb-3" placeholder="Username">
+                    <img style="width: 300px; height: 170px;" class="mx-auto d-block" src="{{ asset('images/HEAD-LOGO-DARK.png') }}" alt="logo"> <br> <br> <br>
+                    <input type="email" class="form-control mb-3" placeholder="Email">
                     <input type="password" class="form-control mb-3" placeholder="Password">
                     <button class="btn btn-primary w-100">Login</button>
                 </div>

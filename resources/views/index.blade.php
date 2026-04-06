@@ -8,6 +8,8 @@
     @vite(['resources/css/app.css'])
 </head>
 <body>
-    <div class="header">Hello World</div>
+    @include('layouts.topnav')
+    
+    <img src="{{ asset('images/BSA-DARK.png') }}" alt="logo" class="d-block mx-auto my-40">
 </body>
 </html>

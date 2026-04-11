@@ -12,8 +12,5 @@
     
     <img src="{{ asset('images/BSA-DARK.png') }}" alt="logo" class="d-block mx-auto my-40">
 
-    <h1 class="text-sm font-bold text-red-500">
-        Tailwind is Working 🚀
-    </h1>
 </body>
 </html>

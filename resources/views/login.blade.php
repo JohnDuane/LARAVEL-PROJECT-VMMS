@@ -10,7 +10,22 @@
 </head>
 
 <body>
-<div class="w-[500px] p-8 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg text-white ">
+
+
+    
+<div class="min-h-screen flex items-center justify-center lg:justify-between px-6 lg:px-20">
+
+  <!-- LEFT SIDE (LOGO / IMAGE) -->
+  <div class="hidden lg:flex w-1/2 items-center justify-center">
+    <img 
+      src="{{ asset('images/BSA-DARK.png') }}" 
+      alt="logo"
+      class="max-w-[380px] w-full"
+    >
+  </div>
+
+  <!-- RIGHT SIDE (LOGIN FORM) -->
+  <div class="w-full max-w-[400px] lg:w-[400px] h-auto lg:h-[570px] px-5 py-4.5 rounded-3xl bg-white/20 backdrop-blur-md border border-white/20 shadow-lg text-white">
     
     <!-- Logo -->
     <div class="flex justify-center mb-1">
@@ -18,14 +33,17 @@
     </div>
 
     <!-- Title -->
-    <p class="text-center text-sm text-white/80 mb-6">
+    <p class="text-center text-sm text-black/80 mb-6">
       Welcome back! Please enter your details.
     </p>
 
-    <!-- Email -->
+<form method="POST" action="/login">
+    @csrf
+        <!-- Email -->
     <div class="mb-2">
       <label class="text-sm">Email</label>
       <input type="email"
+        name="email"
         placeholder="Enter your email"
         class="w-full mt-1 px-3 py-2 rounded-lg bg-transparent border border-white/30 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-white/50">
     </div>
@@ -34,9 +52,11 @@
     <div class="mb-2">
       <label class="text-sm">Password</label>
       <input type="password"
+        name="password"
         placeholder="••••••••"
         class="w-full mt-1 px-3 py-2 rounded-lg bg-transparent border border-white/30 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-white/50">
     </div>
+
 
     <!-- Remember + Forgot -->
     <div class="flex justify-between items-center text-sm mb-2">
@@ -48,18 +68,23 @@
     </div>
 
     <!-- Button -->
-    <button style="border-radius: 10px;" class="w-full rounded-lg bg-gray-900 text-white py-2  hover:bg-black transition">
-      Sign innn
+    <button type="submit" value="submit" style="border-radius:10px" class="w-full bg-gray-900 text-white py-2 hover:bg-black transition">
+      Sign in
     </button>
 
-    
+
     <!-- Register -->
     <p class="text-center text-xs mt-4 text-white/70">
       Don’t have an account?
       <a href="#" class="text-orange-300 hover:underline">Sign up for free</a>
     </p>
 
+</form>
   </div>
+
+</div>
+
+
 
 </body>
 </html>

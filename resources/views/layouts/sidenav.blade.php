@@ -20,7 +20,7 @@
             </nav>
 
             <div class="p-4 border-t border-slate-800">
-                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600">
+                <a href="#" onclick="openLogoutModal()" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600">
                     Logout
                 </a>
             </div>

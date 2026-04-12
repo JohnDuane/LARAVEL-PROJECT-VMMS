@@ -8,8 +8,8 @@
     @vite(['resources/css/app.css'])
 
 </head>
+    @include('layouts.logout')
 <body>
     @include('layouts.sidenav')
-    Welcome bowwsssinggg
 </body>
 </html>

@@ -17,3 +17,5 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/userdash', function () {
     return view('userdash');
 });
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

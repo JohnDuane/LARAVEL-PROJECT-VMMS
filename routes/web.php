@@ -18,4 +18,20 @@ Route::get('/userdash', function () {
     return view('userdash');
 });
 
+Route::get('/joborderform', function () {
+    return view('joborderform');
+})->name('joborderform');
+
+Route::get('/serviceshistory', function () {
+    return view('serviceshistory');
+})->name('serviceshistory');
+
+Route::get('/userdash', function () {
+    return view('userdash');
+})->name('userdash');
+
+Route::get('/usermygarage', function () {
+    return view('usermygarage');
+})->name('usermygarage');
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

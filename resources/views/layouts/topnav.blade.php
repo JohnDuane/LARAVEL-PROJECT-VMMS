@@ -20,7 +20,7 @@
                 </li>
 
                 <li class="nav-item font-weight-bold ms-3">
-                    <a class="nav-link px-1 py-2" style="color: #E9E9E9; font-size: 18px; background-color: #ff8800; border-radius: 30px;" href="{{ route('login') }}">Appoint Now</a>
+                    <a class="nav-link px-1 py-2" style="color: #E9E9E9; font-size: 18px; background-color: #ff8800; border-radius: 30px;" href="{{ route('login') }}">Log in as admin</a>
                 </li>
             </ul>
             </div>

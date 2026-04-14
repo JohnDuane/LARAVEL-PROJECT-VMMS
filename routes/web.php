@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\JobOrderController;
+
 
 Route::get('/', function () {
     return view('index');
@@ -18,9 +20,10 @@ Route::get('/userdash', function () {
     return view('userdash');
 });
 
-Route::get('/joborderform', function () {
-    return view('joborderform');
-})->name('joborderform');
+Route::get('/joborderform', [JobOrderController::class, 'create']);
+
+Route::post('/job-order/store', [JobOrderController::class, 'store'])
+    ->name('job-order.store');
 
 Route::get('/serviceshistory', function () {
     return view('serviceshistory');

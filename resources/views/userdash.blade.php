@@ -21,7 +21,7 @@
 
     <!-- Image -->
     <img 
-      src="your-image.jpg" 
+      src="{{ asset('images/LOGO-DARk.png') }}" 
       class="w-full md:w-64 h-40 object-cover rounded-xl"
     />
 
@@ -43,7 +43,7 @@
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
 
     <div class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md">
-      <div class="text-xl">🚗</div>
+      <img src=" {{ asset('icons/mdi_car.png') }} " alt="">
       <div>
         <p class="text-xs text-gray-400">Total Vehicles</p>
         <p class="text-lg font-semibold">2</p>
@@ -78,7 +78,7 @@
 
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
 
-    <button onclick="window.location.href='{{ route('joborderform') }}'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
+    <button onclick="window.location.href='/joborderform'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
       <span class="text-2xl">➕</span>
       <span class="text-sm mt-2">Add Job Order</span>
     </button>

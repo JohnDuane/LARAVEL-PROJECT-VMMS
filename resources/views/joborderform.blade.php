@@ -32,10 +32,23 @@
             </tr>
           </thead>
           <tbody class="text-gray-700">
-            <tr><td class="p-2">1</td><td class="p-2">John Doe</td><td class="p-2"></td></tr>
-            <tr><td class="p-2">2</td><td class="p-2">Jane Smith</td><td class="p-2"></td></tr>
-            <tr><td class="p-2">3</td><td class="p-2">Shining Star</td><td class="p-2"></td></tr>
+                @foreach($customers as $customer)
+                <tr>
+                    <td class="p-2">{{ $customer->id }}</td>
+                    <td class="p-2">{{ $customer->cust_name }}</td>
+                    <td class="p-2">
+                        <button type="button"
+                            onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
+                            class="bg-orange-500 text-white px-2 py-1 rounded text-xs">
+                            Select
+                        </button>
+                    </td>
+                </tr>
+                @endforeach
           </tbody>
+
+          <input type="hidden" name="customer_id" id="customer_id">
+
         </table>
       </div>
     </div>
@@ -53,10 +66,22 @@
             </tr>
           </thead>
           <tbody class="text-gray-700">
-            <tr><td class="p-2">1</td><td class="p-2">XWM123</td><td class="p-2">Toyota</td></tr>
-            <tr><td class="p-2">2</td><td class="p-2">ABC456</td><td class="p-2">Honda</td></tr>
-            <tr><td class="p-2">3</td><td class="p-2">XYZ789</td><td class="p-2">Ford</td></tr>
+              @foreach($vehicles as $vehicle)
+              <tr data-customer="{{ $vehicle->customer_id }}">
+                  <td class="p-2">{{ $vehicle->vehicle_id }}</td>
+                  <td class="p-2">{{ $vehicle->plate_number }}</td>
+                  <td class="p-2">{{ $vehicle->make }}</td>
+                  <td class="p-2">
+                      <button type="button"
+                          onclick="selectVehicle('{{ $vehicle->vehicle_id }}')"
+                          class="bg-orange-500 text-white px-2 py-1 rounded text-xs">
+                          Select
+                      </button>
+                  </td>
+              </tr>
+              @endforeach
           </tbody>
+          <input type="hidden" name="vehicle_id" id="vehicle_id">
         </table>
       </div>
     </div>
@@ -116,10 +141,19 @@
                     </tr>
                   </thead>
                   <tbody class="text-gray-700">
-                    <tr><td class="p-2">Oil Change</td><td class="p-2">$50.00</td><td class="p-2"></td></tr>
-                    <tr><td class="p-2">Tire Rotation</td><td class="p-2">$30.00</td><td class="p-2"></td></tr>
-                    <tr><td class="p-2">Brake Inspection</td><td class="p-2">$75.00</td><td class="p-2"></td></tr>
-                    <tr><td class="p-2">Brake Replacement</td><td class="p-2">$150.00</td><td class="p-2"></td></tr>
+                        @foreach($services as $service)
+                        <tr>
+                            <td class="p-2">{{ $service->job_desc }}</td>
+                            <td class="p-2">₱{{ $service->price }}</td>
+                            <td class="p-2">
+                                <button type="button"
+                                    onclick="addService('{{ $service->service_id }}', '{{ $service->job_desc }}', {{ $service->price }})"
+                                    class="bg-green-500 text-white px-2 py-1 rounded text-xs">
+                                    Add
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
                   </tbody>
             </table>
       </div>
@@ -293,4 +327,30 @@ function updateSubtotal() {
     document.getElementById("partsSubtotal")
         .innerText = partsSubtotal.toFixed(2);
 }
+
+
+function selectCustomer(id, name) {
+    document.getElementById('customer_id').value = id;
+
+    // OPTIONAL: filter vehicles based on selected customer
+    document.querySelectorAll('[data-customer]').forEach(row => {
+        if (row.getAttribute('data-customer') == id) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function selectVehicle(id) {
+    document.getElementById('vehicle_id').value = id;
+}
+
+let servicesSelected = [];
+
+function addService(id, name, price) {
+    servicesSelected.push({id, name, price});
+    alert(name + " added!");
+}
 </script>
+

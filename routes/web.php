@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JobOrderController;
+use App\Http\Controllers\CustomerController;
 
 
 Route::get('/', function () {
@@ -43,5 +44,7 @@ Route::get('/addcustomer', function () {
 Route::get('/usermygarage', function () {
     return view('usermygarage');
 })->name('usermygarage');
+
+Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

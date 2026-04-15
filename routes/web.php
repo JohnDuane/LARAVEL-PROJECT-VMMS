@@ -22,6 +22,9 @@ Route::get('/userdash', function () {
 
 Route::get('/joborderform', [JobOrderController::class, 'create']);
 
+Route::get('/job-order/{id}/parts', [JobOrderPartController::class, 'create']);
+Route::post('/job-order/parts/store', [JobOrderPartController::class, 'store']);
+
 Route::post('/job-order/store', [JobOrderController::class, 'store'])
     ->name('job-order.store');
 
@@ -32,6 +35,10 @@ Route::get('/serviceshistory', function () {
 Route::get('/userdash', function () {
     return view('userdash');
 })->name('userdash');
+
+Route::get('/addcustomer', function () {
+    return view('addcustomer');
+})->name('addcustomer');
 
 Route::get('/usermygarage', function () {
     return view('usermygarage');

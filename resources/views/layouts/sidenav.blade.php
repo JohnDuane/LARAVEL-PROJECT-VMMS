@@ -14,7 +14,7 @@
                 <a href="{{ route('serviceshistory') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700">
                     Services History
                 </a>
-                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700">
+                <a href="{{ route('addcustomer') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700">
                     Add Customer
                 </a>
 

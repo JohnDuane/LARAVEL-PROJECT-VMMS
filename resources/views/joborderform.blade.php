@@ -127,6 +127,68 @@
 
   </div>
 
+
+  <div class="bg-zinc-900 text-white rounded-xl p-4 w-full max-w-4xl shadow-lg">
+
+    <!-- TABLE -->
+    <table class="w-full text-sm">
+        <thead class="border-b border-zinc-700 text-zinc-400">
+            <tr>
+                <th class="py-2 text-left">PART NAME</th>
+                <th>QTY USED</th>
+                <th>UNIT COST</th>
+                <th>AMOUNT</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody id="partsTableBody">
+            <!-- EMPTY BY DEFAULT -->
+        </tbody>
+    </table>
+
+    <!-- ADD ROW -->
+    <div class="grid grid-cols-5 gap-3 items-center mt-4">
+
+        <!-- 🔥 DYNAMIC PARTS -->
+        <select id="partSelect"
+            class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1">
+            
+            <option value="">Select Part</option>
+
+            @foreach($parts as $part)
+                <option value="{{ $part->part_id }}" data-price="{{ $part->price }}">
+                    {{ $part->part_name }}
+                </option>
+            @endforeach
+
+        </select>
+
+        <!-- QTY -->
+        <input type="number" id="qtyInput" placeholder="Qty"
+            class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 w-16">
+
+        <!-- AUTO -->
+        <div class="text-zinc-500 text-sm">auto</div>
+        <div class="text-zinc-500 text-sm">auto</div>
+
+        <!-- ADD -->
+        <button type="button" onclick="addPartRow()"
+            class="bg-orange-500 hover:bg-orange-600 text-white rounded px-3 py-1">
+            +
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="flex justify-between items-center mt-4 text-sm text-zinc-400">
+        <p>Parts are pulled from database. Quantity cannot exceed stock.</p>
+        <p class="text-white font-semibold">
+            Parts subtotal ₱<span id="partsSubtotal">0.00</span>
+        </p>
+    </div>
+
+</div>
+
   <!-- Buttons -->
   <div class="flex justify-end gap-3 mt-6">
     <button type="button" onclick="window.location.href='/userdash'" class="border border-gray-400 text-gray-300 rounded-lg px-7 py-2 text-sm">
@@ -165,4 +227,70 @@ document.addEventListener('click', function(e) {
         dropdown.classList.add('hidden');
     }
 });
+</script>
+
+
+<script>
+let partsSubtotal = 0;
+
+function addPartRow() {
+    const select = document.getElementById("partSelect");
+    const qtyInput = document.getElementById("qtyInput");
+
+    const partId = select.value;
+    const partName = select.options[select.selectedIndex].text;
+    const price = parseFloat(select.options[select.selectedIndex].dataset.price);
+    const qty = parseInt(qtyInput.value);
+
+    if (!partId || !qty || qty <= 0) {
+        alert("Select part and valid quantity");
+        return;
+    }
+
+    const amount = price * qty;
+    partsSubtotal += amount;
+
+    const row = `
+        <tr class="border-b border-zinc-700">
+            <td>
+                ${partName}
+                <input type="hidden" name="parts[]" value="${partId}">
+            </td>
+
+            <td>
+                <input type="number" name="qty[]" value="${qty}"
+                    class="bg-zinc-800 w-16 px-2 py-1">
+            </td>
+
+            <td>₱${price.toFixed(2)}</td>
+
+            <td>₱${amount.toFixed(2)}</td>
+
+            <td>
+                <button type="button" onclick="removePartRow(this, ${amount})"
+                    class="text-red-500">✕</button>
+            </td>
+        </tr>
+    `;
+
+    document.getElementById("partsTableBody")
+        .insertAdjacentHTML("beforeend", row);
+
+    updateSubtotal();
+
+    // reset inputs
+    select.value = "";
+    qtyInput.value = "";
+}
+
+function removePartRow(btn, amount) {
+    btn.closest("tr").remove();
+    partsSubtotal -= amount;
+    updateSubtotal();
+}
+
+function updateSubtotal() {
+    document.getElementById("partsSubtotal")
+        .innerText = partsSubtotal.toFixed(2);
+}
 </script>

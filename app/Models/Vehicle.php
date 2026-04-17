@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Vehicle extends Model
 {
     protected $table = 'vehicle';
+    protected $primaryKey = 'vehicle_id';
 
     protected $fillable = [
-    'customer_id',
     'plate_number',
     'make',
-    'engine_model'
+    'engine_model',
+    'customer_id'
     ];
 }

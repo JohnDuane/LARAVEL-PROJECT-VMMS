@@ -52,7 +52,7 @@
     </div>
 
     <div class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md">
-      <div class="text-xl">📅</div>
+      <img src=" {{ asset('icons/mdi_calendar.png') }} " alt="">
       <div>
         <p class="text-xs text-gray-400">Released Vehicle</p>
         <p class="text-lg font-semibold">5</p>
@@ -61,7 +61,7 @@
     </div>
 
     <div class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md">
-      <div class="text-xl">⚠️</div>
+      <img src=" {{ asset('icons/material-symbols_warning.png') }} " alt="">
       <div>
         <p class="text-xs text-gray-400">Alerts/Reminders</p>
         <p class="text-lg font-semibold">0</p>
@@ -90,12 +90,12 @@
 
     <button class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
       <span class="text-2xl">✏️</span>
-      <span class="text-sm mt-2">Edit Cars</span>
+      <span class="text-sm mt-2">Add Mechanic</span>
     </button>
 
     <button class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
       <span class="text-2xl">🗑️</span>
-      <span class="text-sm mt-2">Delete Cars</span>
+      <span class="text-sm mt-2">Add Services</span>
     </button>
 
   </div>

@@ -12,7 +12,8 @@ class StaffController extends Controller
      */
     public function index()
     {
-        //
+        $staff = \App\Models\Staff::all(); // fetch data
+        return view('addmechanic', compact('staff'));
     }
 
     /**
@@ -29,7 +30,8 @@ class StaffController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Staff::create($request->all());
+        return redirect()->back();
     }
 
     /**
@@ -53,7 +55,19 @@ class StaffController extends Controller
      */
     public function update(Request $request, staff $staff)
     {
-        //
+        Staff::where('staff_id', $request->staff_id)->update([
+            'staff_name' => $request->staff_name,
+            'role' => $request->role,
+            'contact_number' => $request->contact_number
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function delete(Request $request)
+    {
+        Staff::where('staff_id', $request->staff_id)->delete();
+        return redirect()->back();
     }
 
     /**

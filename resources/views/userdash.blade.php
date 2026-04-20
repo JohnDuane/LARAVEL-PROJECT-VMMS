@@ -13,7 +13,7 @@
     @include('layouts.sidenav')
 
     <main class="flex-1 p-6 min-h-screen">
-        <h1 class="text-3xl font-bold text-white">Recently Repaired</h1>
+        <h1 class="text-3xl font-bold text-white">Dashboard</h1>
        
 
   <!-- Main Card -->
@@ -88,7 +88,7 @@
       <span class="text-sm mt-2">Print Record</span>
     </button>
 
-    <button class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
+    <button onclick="window.location.href='/addmechanic'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
       <span class="text-2xl">✏️</span>
       <span class="text-sm mt-2">Add Mechanic</span>
     </button>

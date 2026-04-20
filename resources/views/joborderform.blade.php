@@ -11,7 +11,7 @@
 <form action="{{ route('job-order.store') }}" method="POST">
 @csrf
 
-<input type="hidden" name="mechanic_id" id="mechanic_id">
+<input type="hidden" name="staff_id" id="mechanic_id">
 
 <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-2xl">
   <h2 class="text-white text-lg font-medium mb-6">Job Order/Repair Estimate</h2>
@@ -131,32 +131,58 @@
 
     <div class="flex flex-col">
       <label class="block text-sm text-gray-400 mb-1">Services</label>
-      <div class="h-38 overflow-y-auto border border-gray-200 rounded-xl">
-            <table class="w-full table-fixed bg-amber-50 text-sm">
-                  <thead>
-                    <tr>
-                      <th class="p-2">Job Description</th>
-                      <th class="p-2">Price</th>
-                      <th class="p-2">Option</th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-gray-700">
-                        @foreach($services as $service)
-                        <tr>
-                            <td class="p-2">{{ $service->job_desc }}</td>
-                            <td class="p-2">₱{{ $service->price }}</td>
-                            <td class="p-2">
-                                <button type="button"
-                                    onclick="addService('{{ $service->service_id }}', '{{ $service->job_desc }}', {{ $service->price }})"
-                                    class="bg-green-500 text-white px-2 py-1 rounded text-xs">
-                                    Add
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                  </tbody>
-            </table>
-      </div>
+      <div class="bg-zinc-900 text-white rounded-xl p-4 w-full shadow-lg mt-4">
+
+    <!-- TABLE -->
+    <table class="w-full text-sm">
+        <thead class="border-b border-zinc-700 text-zinc-400">
+            <tr>
+                <th class="py-2 text-left">SERVICE</th>
+                <th>PRICE</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody id="servicesTableBody">
+            <!-- dynamic rows -->
+        </tbody>
+    </table>
+
+    <!-- ADD SERVICE -->
+    <div class="grid grid-cols-3 gap-3 items-center mt-4">
+
+        <select id="serviceSelect"
+            class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1">
+
+            <option value="">Select Service</option>
+
+            @foreach($services as $service)
+                <option value="{{ $service->service_id }}" data-price="{{ $service->price }}">
+                    {{ $service->job_desc }}
+                </option>
+            @endforeach
+
+        </select>
+
+        <div class="text-zinc-500 text-sm">auto</div>
+
+        <button type="button" onclick="addServiceRow()"
+            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1">
+            +
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="flex justify-end mt-4 text-sm">
+        <p class="text-white font-semibold">
+            Services subtotal ₱<span id="servicesSubtotal">0.00</span>
+        </p>
+
+    </div>
+
+
+
+</div>
     </div>
 
   </div>
@@ -219,9 +245,44 @@
         <p class="text-white font-semibold">
             Parts subtotal ₱<span id="partsSubtotal">0.00</span>
         </p>
+
     </div>
+        
+</div>
+
+
+
+    <div class="grid grid-cols-2 gap-4 mt-4">
+
+  <!-- Date Issued -->
+  <div>
+    <label class="text-sm text-gray-400">Date Issued</label>
+    <input type="date" name="date_issued"
+      class="w-full bg-[#2a2a2a] border border-[#444] text-white rounded px-2 py-1" required>
+  </div>
+
+  <!-- Status -->
+  <div>
+    <label class="text-sm text-gray-400">Status</label>
+    <select name="status"
+      class="w-full bg-[#2a2a2a] border border-[#444] text-white rounded px-2 py-1" required>
+      <option value="">Select Status</option>
+      <option value="Pending">Pending</option>
+      <option value="Ongoing">Ongoing</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
 
 </div>
+
+    <div class="flex justify-end mt-6">
+        <p class="text-green-400 font-bold mt-2">
+            Total Cost ₱<span id="totalCost">0.00</span>
+        </p>
+        
+        <input type="hidden" name="total_cost" id="total_cost">
+    </div>
+        
 
   <!-- Buttons -->
   <div class="flex justify-end gap-3 mt-6">
@@ -311,6 +372,7 @@ function addPartRow() {
         .insertAdjacentHTML("beforeend", row);
 
     updateSubtotal();
+    updateTotalCost();
 
     // reset inputs
     select.value = "";
@@ -321,6 +383,7 @@ function removePartRow(btn, amount) {
     btn.closest("tr").remove();
     partsSubtotal -= amount;
     updateSubtotal();
+    updateTotalCost();
 }
 
 function updateSubtotal() {
@@ -346,11 +409,68 @@ function selectVehicle(id) {
     document.getElementById('vehicle_id').value = id;
 }
 
-let servicesSelected = [];
+let servicesSubtotal = 0;
 
-function addService(id, name, price) {
-    servicesSelected.push({id, name, price});
-    alert(name + " added!");
+function addServiceRow() {
+    const select = document.getElementById("serviceSelect");
+
+    const serviceId = select.value;
+    const serviceName = select.options[select.selectedIndex].text;
+    const price = parseFloat(select.options[select.selectedIndex].dataset.price);
+
+    if (!serviceId) {
+        alert("Select a service");
+        return;
+    }
+
+    servicesSubtotal += price;
+
+    const row = `
+        <tr class="border-b border-zinc-700">
+            <td>
+                ${serviceName}
+                <input type="hidden" name="services[]" value="${serviceId}">
+            </td>
+
+            <td>₱${price.toFixed(2)}</td>
+
+            <td>
+                <button type="button" onclick="removeServiceRow(this, ${price})"
+                    class="text-red-500">✕</button>
+            </td>
+        </tr>
+    `;
+
+    document.getElementById("servicesTableBody")
+        .insertAdjacentHTML("beforeend", row);
+
+    updateServiceSubtotal();
+    updateTotalCost();
+
+    select.value = "";
 }
+
+function removeServiceRow(btn, price) {
+    btn.closest("tr").remove();
+    servicesSubtotal -= price;
+    updateServiceSubtotal();
+    updateTotalCost();
+}
+
+function updateServiceSubtotal() {
+    document.getElementById("servicesSubtotal")
+        .innerText = servicesSubtotal.toFixed(2);
+}
+
+function updateTotalCost() {
+    let total = partsSubtotal + servicesSubtotal;
+
+    document.getElementById("totalCost").innerText = total.toFixed(2);
+    document.getElementById("total_cost").value = total.toFixed(2);
+}
+
+
 </script>
+
+
 

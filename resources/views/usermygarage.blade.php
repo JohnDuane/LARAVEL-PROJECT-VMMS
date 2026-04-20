@@ -27,7 +27,7 @@
             </tr>
         </thead>
 
-        <tbody id="vehicleTable">
+        <tbody id="vehicleTable" class="text-center">
             @foreach($vehicles as $v)
             <tr class="border-b border-gray-700 cursor-pointer hover:bg-gray-800"
                 onclick="selectRow({{ $v->vehicle_id }}, '{{ $v->plate_number }}', '{{ $v->make }}', '{{ $v->engine_model }}', {{ $v->customer_id }})">
@@ -72,6 +72,8 @@
             class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500"/>
     </div>
 
+
+    <label class="block text-sm text-gray-400 mb-1">Customer</label>
     <select name="customer_id" id="customer" required placeholder="Customer ID" class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500">
                 <option value="">Select Customer</option>
                   @foreach($customers as $c)
@@ -100,9 +102,9 @@
         </button>
     </div>
 
-</div>
-</form>
-</div>
+            </div>
+        </form>
+    </div>
 </div>
 
 </main>

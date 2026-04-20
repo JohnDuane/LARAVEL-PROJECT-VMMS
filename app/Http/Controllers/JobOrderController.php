@@ -31,6 +31,26 @@ class JobOrderController extends Controller
 
 public function store(Request $request)
 {
-    dd($request->all());
+    // TEMP DEBUG (optional)
+    // dd($request->all());
+
+    $request->validate([
+        'customer_id' => 'required',
+        'vehicle_id' => 'required',
+        'staff_id' => 'required',
+        'date_issued' => 'required|date',
+        'status' => 'required',
+    ]);
+
+    $job = \App\Models\JobOrder::create([
+        'customer_id' => $request->customer_id,
+        'vehicle_id' => $request->vehicle_id,
+        'staff_id' => $request->staff_id,
+        'date_issued' => $request->date_issued,
+        'status' => $request->status,
+        'total_cost' => $request->total_cost,
+    ]);
+
+    return redirect()->back()->with('success', 'Saved!');
 }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Models\Customer;
 use App\Models\Vehicle;
@@ -51,6 +52,79 @@ public function store(Request $request)
         'total_cost' => $request->total_cost,
     ]);
 
-    return redirect()->back()->with('success', 'Saved!');
+    // SAVE SERVICES
+if ($request->services) {
+    foreach ($request->services as $serviceId) {
+        \DB::table('job_order_services')->insert([
+            'job_order_id' => $job->job_order_id,
+            'service_id' => $serviceId,
+        ]);
+    }
 }
+
+// SAVE PARTS
+if ($request->parts) {
+    foreach ($request->parts as $index => $partId) {
+        \DB::table('job_order_parts')->insert([
+            'job_order_id' => $job->job_order_id,
+            'part_id' => $partId,
+            'quantity' => $request->qty[$index],
+        ]);
+    }
+}
+
+    return redirect()->back()
+    ->with('success', 'Job order has been added!')
+    ->with('job_order_id', $job->job_order_id);
+}
+
+public function generatePDF($id)
+{
+    $job = \App\Models\JobOrder::findOrFail($id);
+
+// GET CUSTOMER + VEHICLE + MECHANIC (from view or joins)
+$view = \App\Models\ViewJobOrder::find($id);
+
+// GET SERVICES
+$services = \DB::table('job_order_services')
+    ->join('services', 'job_order_services.service_id', '=', 'services.service_id')
+    ->where('job_order_services.job_order_id', $id)
+    ->select('services.job_desc as name', 'services.price')
+    ->get();
+
+// GET PARTS
+$parts = \DB::table('job_order_parts')
+    ->join('part', 'job_order_parts.part_id', '=', 'part.part_id')
+    ->select(
+        'part.part_name as name',
+        'part.price',
+        'job_order_parts.quantity as qty'
+    )
+    ->get();
+
+// CALCULATE TOTALS
+$services_total = $services->sum('price');
+
+$parts_total = $parts->sum(function ($p) {
+    return $p->price * $p->qty;
+});
+
+return Pdf::loadView('pdf.job-order', [
+    'job' => $job,
+    'view' => $view,
+    'services' => $services,
+    'parts' => $parts,
+    'services_total' => $services_total,
+    'parts_total' => $parts_total,
+])->stream('job-order.pdf');
+
+    $data = [
+        'job' => $job
+    ];
+
+    $pdf = Pdf::loadView('pdf.job-order', $data);
+
+    return $pdf->stream('job-order.pdf');
+}
+
 }

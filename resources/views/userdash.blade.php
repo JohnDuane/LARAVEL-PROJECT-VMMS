@@ -93,7 +93,7 @@
       <span class="text-sm mt-2">Add Mechanic</span>
     </button>
 
-    <button class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
+    <button onclick="window.location.href='/addservices'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
       <span class="text-2xl">🗑️</span>
       <span class="text-sm mt-2">Add Services</span>
     </button>

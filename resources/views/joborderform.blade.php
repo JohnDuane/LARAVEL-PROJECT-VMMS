@@ -8,6 +8,16 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-8" style="background: linear-gradient(135deg, #c45c00 0%, #8b3a00 60%, #3a1a00 100%);">
 
+
+@if(session('success'))
+<script>
+    if (confirm("Job order has been added!\n\nDo you want to save it as PDF?")) {
+        window.open("{{ route('job-order.pdf', session('job_order_id')) }}", "_blank");
+    }
+</script>
+@endif
+
+
 <form action="{{ route('job-order.store') }}" method="POST">
 @csrf
 

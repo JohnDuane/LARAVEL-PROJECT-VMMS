@@ -13,5 +13,7 @@ class Service extends Model
     'job_desc',
     'price'
     ];
+
+    
 }
 

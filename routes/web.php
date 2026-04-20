@@ -6,6 +6,8 @@ use App\Http\Controllers\JobOrderController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\JobOrderPartController;
 
 
 
@@ -23,6 +25,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/userdash', function () {
     return view('userdash');
 });
+
+Route::get('/addservices', [ServiceController::class, 'index']);
+
 
 Route::get('/joborderform', [JobOrderController::class, 'create']);
 
@@ -63,6 +68,14 @@ Route::post('/staff/delete', [StaffController::class, 'delete'])->name('staff.de
 Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
 Route::post('/customer/update', [CustomerController::class, 'update'])->name('customer.update');
 Route::post('/customer/delete', [CustomerController::class, 'delete'])->name('customer.delete');
+
+Route::get('/services', [ServiceController::class, 'index']);
+Route::post('/services/store', [ServiceController::class, 'store']);
+Route::post('/services/update/{id}', [ServiceController::class, 'update']);
+Route::post('/services/delete/{id}', [ServiceController::class, 'destroy']);
+
+Route::get('/job-order/pdf/{id}', [JobOrderController::class, 'generatePDF'])
+    ->name('job-order.pdf');
 
 Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
 

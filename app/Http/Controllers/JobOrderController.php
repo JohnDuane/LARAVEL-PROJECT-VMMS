@@ -30,6 +30,12 @@ class JobOrderController extends Controller
         'parts'));
 }
 
+public function index()
+{
+    $data = \App\Models\ViewJobOrder::all();
+    return view('joborders.index', compact('data'));
+}
+
 public function store(Request $request)
 {
     // TEMP DEBUG (optional)
@@ -78,6 +84,13 @@ if ($request->parts) {
     ->with('job_order_id', $job->job_order_id);
 }
 
+public function servicesHistory()
+{
+    $data = \App\Models\ViewJobOrder::all();
+
+    return view('serviceshistory', compact('data'));
+}
+
 public function generatePDF($id)
 {
     $job = \App\Models\JobOrder::findOrFail($id);
@@ -95,6 +108,7 @@ $services = \DB::table('job_order_services')
 // GET PARTS
 $parts = \DB::table('job_order_parts')
     ->join('part', 'job_order_parts.part_id', '=', 'part.part_id')
+    ->where('job_order_parts.job_order_id', $id) // ✅ IMPORTANT
     ->select(
         'part.part_name as name',
         'part.price',

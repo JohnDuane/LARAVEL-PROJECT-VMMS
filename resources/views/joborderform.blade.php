@@ -43,7 +43,8 @@
           </thead>
           <tbody class="text-gray-700">
                 @foreach($customers as $customer)
-                <tr>
+                <tr class="border-b border-gray-700 text-[#ff8800] hover:bg-[#232323] cursor-pointer" 
+                    onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')" >
                     <td class="p-2">{{ $customer->id }}</td>
                     <td class="p-2">{{ $customer->cust_name }}</td>
                     <td class="p-2">
@@ -77,7 +78,9 @@
           </thead>
           <tbody class="text-gray-700">
               @foreach($vehicles as $vehicle)
-              <tr data-customer="{{ $vehicle->customer_id }}">
+              <tr class="border-b border-gray-700 text-[#ff8800] hover:bg-[#232323] cursor-pointer"
+              onclick="selectVehicle('{{ $vehicle->vehicle_id }}')"
+              data-customer="{{ $vehicle->customer_id }}">
                   <td class="p-2">{{ $vehicle->vehicle_id }}</td>
                   <td class="p-2">{{ $vehicle->plate_number }}</td>
                   <td class="p-2">{{ $vehicle->make }}</td>
@@ -413,10 +416,23 @@ function selectCustomer(id, name) {
             row.style.display = 'none';
         }
     });
+
+    document.querySelectorAll("tr").forEach(row => {
+        row.classList.remove("bg-gray-600");
+    });
+
+    event.currentTarget.classList.add("bg-gray-600");
+
 }
 
 function selectVehicle(id) {
     document.getElementById('vehicle_id').value = id;
+
+    document.querySelectorAll("tr").forEach(row => {
+        row.classList.remove("bg-gray-600");
+    });
+
+    event.currentTarget.classList.add("bg-gray-600");
 }
 
 let servicesSubtotal = 0;

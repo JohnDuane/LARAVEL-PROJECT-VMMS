@@ -17,7 +17,7 @@
                 </a>
                 
                 <a href="{{ route('serviceshistory') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700">
-                    Services History
+                    Records
                 </a>
                 
 

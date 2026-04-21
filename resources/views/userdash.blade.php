@@ -42,32 +42,38 @@
   <!-- Stats -->
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
 
-    <div class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md">
-      <img src=" {{ asset('icons/mdi_car.png') }} " alt="">
-      <div>
-        <p class="text-xs text-gray-400">Total Vehicles</p>
-        <p class="text-lg font-semibold">2</p>
-        <p class="text-xs text-gray-500">Active in System</p>
-      </div>
-    </div>
+    <button onclick="window.location.href='/viewcustomervehicles'"
+      class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md hover:bg-zinc-800 transition w-full text-left">
 
-    <div class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md">
-      <img src=" {{ asset('icons/mdi_calendar.png') }} " alt="">
-      <div>
-        <p class="text-xs text-gray-400">Released Vehicle</p>
-        <p class="text-lg font-semibold">5</p>
-        <p class="text-xs text-gray-500">Every Month</p>
-      </div>
-    </div>
+      <img src="{{ asset('icons/mdi_car.png') }}" alt="">
+        <div>
+          <p class="text-xs text-gray-400">Total Vehicles</p>
+          <p class="text-lg font-semibold">{{ $totalVehicles }}</p>
+          <p class="text-xs text-gray-500">Active in System</p>
+        </div>
+      </button>
 
-    <div class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md">
-      <img src=" {{ asset('icons/material-symbols_warning.png') }} " alt="">
-      <div>
-        <p class="text-xs text-gray-400">Alerts/Reminders</p>
-        <p class="text-lg font-semibold">0</p>
-        <p class="text-xs text-gray-500">See Reminders</p>
-      </div>
-    </div>
+      <button 
+        class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md hover:bg-zinc-800 transition w-full text-left">
+
+        <img src="{{ asset('icons/mdi_calendar.png') }}" alt="">
+          <div>
+            <p class="text-xs text-gray-400">Job Orders</p>
+            <p class="text-lg font-semibold">{{ $totalJobOrders }}</p>
+            <p class="text-xs text-gray-500">On The System</p>
+          </div>
+      </button>
+
+      <button onclick="window.location.href='/reminders'" 
+        class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md hover:bg-zinc-800 transition w-full text-left">
+
+        <img src="{{ asset('icons/material-symbols_warning.png') }}" alt="">
+        <div>
+          <p class="text-xs text-gray-400">Alerts / Reminders</p>
+          <p class="text-lg font-semibold">{{ $totalReminders }}</p>
+          <p class="text-xs text-gray-500">View Reminders</p>
+        </div>
+      </button>
 
   </div>
 

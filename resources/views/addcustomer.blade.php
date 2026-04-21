@@ -87,20 +87,20 @@
 
         <!-- SAVE -->
         <button type="submit" formaction="{{ route('customer.store') }}"
-            class="bg-orange-600 hover:bg-orange-500 text-white rounded-lg px-6 py-2 text-sm">
+            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
             Save
         </button>
 
         <!-- UPDATE -->
         <button type="submit" formaction="{{ route('customer.update') }}"
-            class="bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-6 py-2 text-sm">
+            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
             Update
         </button>
 
         <!-- DELETE -->
         <button type="submit" formaction="{{ route('customer.delete') }}"
             onclick="return confirm('Are you sure you want to delete this customer?')"
-            class="bg-red-600 hover:bg-red-500 text-white rounded-lg px-6 py-2 text-sm">
+            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
             Delete
         </button>
     </div>

@@ -8,7 +8,8 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\JobOrderPartController;
-
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CustomerVehicleController;
 
 
 Route::get('/', function () {
@@ -22,10 +23,6 @@ Route::get('/login', function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/userdash', function () {
-    return view('userdash');
-});
-
 Route::get('/addservices', [ServiceController::class, 'index']);
 
 
@@ -37,17 +34,26 @@ Route::post('/job-order/parts/store', [JobOrderPartController::class, 'store']);
 Route::post('/job-order/store', [JobOrderController::class, 'store'])
     ->name('job-order.store');
 
-Route::get('/serviceshistory', function () {
-    return view('serviceshistory');
-})->name('serviceshistory');
+Route::get('/userdash', [DashboardController::class, 'index'])->name('userdash');
 
-Route::get('/userdash', function () {
-    return view('userdash');
-})->name('userdash');
+Route::get('/job-orders', [JobOrderController::class, 'index']);
+
+Route::get('/customer-vehicles', [CustomerVehicleController::class, 'index']);
+
+Route::get('/serviceshistory', [JobOrderController::class, 'servicesHistory'])
+    ->name('serviceshistory');
 
 Route::get('/addmechanic', function () {
     return view('addmechanic');
 })->name('addemchanic');
+
+Route::get('/reminders', function () {
+    return "Reminders system coming soon.";
+});
+
+Route::get('/viewcustomervehicles', function () {
+    return view('viewcustomervehicles');
+});
 
 Route::get('/addcustomer', [CustomerController::class, 'index'])
     ->name('addcustomer');

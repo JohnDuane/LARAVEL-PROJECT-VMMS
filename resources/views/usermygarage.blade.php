@@ -17,7 +17,7 @@
 
     <!-- TABLE -->
   <div class="w-[60%]">
-    <table class="rounded-sm w-full text-sm mb-6 border border-gray-700">
+    <table class="rounded-xl w-full text-sm mb-6 border border-gray-700">
         <thead class="bg-[#ff8800] text-black">
             <tr>
                 <th>ID</th>
@@ -87,17 +87,17 @@
     <div class="flex justify-end gap-3 px-3 mt-5">
 
         <button type="button" onclick="addVehicle()"
-            class="bg-orange-600 hover:bg-orange-500 text-white rounded-lg px-6 py-2 text-sm">
+            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
             Add
         </button>
 
 	<button type="button" onclick="updateVehicle()"
-            class="bg-orange-600 hover:bg-orange-500 text-white rounded-lg px-6 py-2 text-sm">
+            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
             Update
         </button>
 
 	<button type="button" onclick="deleteVehicle()"
-            class="bg-orange-600 hover:bg-orange-500 text-white rounded-lg px-6 py-2 text-sm">
+            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
             Delete
         </button>
     </div>

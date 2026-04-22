@@ -25,7 +25,7 @@
     </thead>
 
     <tbody class="text-center">
-        @foreach($vehicle as $v)
+        @foreach($vehicles as $v)
             <tr class="border-b border-gray-700 hover:bg-gray-800">
                 <td>{{ $v->customer_id }}</td>
                 <td>{{ $v->cust_name }}</td>

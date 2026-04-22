@@ -47,13 +47,11 @@ Route::get('/addmechanic', function () {
     return view('addmechanic');
 })->name('addemchanic');
 
-Route::get('/reminders', function () {
-    return "Reminders system coming soon.";
-});
+Route::get('/reminders', [DashboardController::class, 'remindersPage'])->name('reminders');
 
-Route::get('/viewcustomervehicles', function () {
-    return view('viewcustomervehicles');
-});
+Route::post('/reminders/store', [DashboardController::class, 'storeReminder'])->name('reminders.store');
+
+Route::get('/viewcustomervehicles', [CustomerVehicleController::class, 'index']);
 
 Route::get('/addcustomer', [CustomerController::class, 'index'])
     ->name('addcustomer');

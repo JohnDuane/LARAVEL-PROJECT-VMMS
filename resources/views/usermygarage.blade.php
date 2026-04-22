@@ -50,7 +50,7 @@
 
   <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-md">
 
-    <h2 class="text-white text-lg font-medium mb-6">Add Customer</h2>
+    <h2 class="text-white text-lg font-medium mb-6">Add/Edit Vehicle</h2>
 
 
     <div class="mb-4">

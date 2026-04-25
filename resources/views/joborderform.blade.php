@@ -30,75 +30,111 @@
   <div class="grid grid-cols-2 gap-x-6 gap-y-3 mb-3">
     
     <!-- Customers -->
-    <div>
-      <label class="block text-sm text-gray-400 mb-1">Customers</label>
-      <div class="h-38 overflow-y-auto border border-gray-200 rounded-xl">
-        <table class="w-full table-fixed bg-amber-50 text-sm">
-          <thead>
-            <tr>
-              <th class="p-2">ID</th>
-              <th class="p-2">Customer Name</th>
-              <th class="p-2">Option</th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-700">
-                @foreach($customers as $customer)
-                <tr class="border-b border-gray-700 text-[#ff8800] hover:bg-[#232323] cursor-pointer" 
-                    onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')" >
-                    <td class="p-2">{{ $customer->id }}</td>
-                    <td class="p-2">{{ $customer->cust_name }}</td>
-                    <td class="p-2">
-                        <button type="button"
-                            onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
-                            class="bg-orange-500 text-white px-2 py-1 rounded text-xs">
-                            Select
-                        </button>
-                    </td>
-                </tr>
-                @endforeach
-          </tbody>
+<div class="overflow-hidden">
+  <label class="block text-sm text-gray-400 mb-2 tracking-wide">Customers</label>
 
-          <input type="hidden" name="customer_id" id="customer_id">
+  <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-40 overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
+    <table class="w-full text-sm text-left text-gray-300">
+      
+      <!-- Header -->
+      <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
+        <tr>
+          <th class="px-4 py-3 font-medium">ID</th>
+          <th class="px-4 py-3 font-medium">Customer</th>
+          <th class="px-4 py-3 text-center font-medium">Action</th>
+        </tr>
+      </thead>
 
-        </table>
-      </div>
-    </div>
+      <!-- Body -->
+      <tbody class="divide-y divide-gray-700">
+        @foreach($customers as $customer)
+        <tr 
+          class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
+          onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
+        >
+          <td class="px-4 py-3 text-gray-400">{{ $customer->id }}</td>
+
+          <td class="px-4 py-3 font-medium text-white">
+            {{ $customer->cust_name }}
+          </td>
+
+          <td class="px-4 py-3 text-center">
+            <button 
+              type="button"
+              onclick="event.stopPropagation(); selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
+              class="px-3 py-1.5 text-xs font-semibold rounded-lg 
+                     bg-orange-500 hover:bg-orange-600 
+                     transition duration-150 shadow-md"
+            >
+              Select
+            </button>
+          </td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Hidden input -->
+  <input type="hidden" name="customer_id" id="customer_id">
+</div>
 
     <!-- Cars -->
-    <div>
-      <label class="block text-sm text-gray-400 mb-1">Cars</label>
-      <div class="h-38 overflow-y-auto border border-gray-200 rounded-xl">
-        <table class="w-full table-fixed bg-amber-50 text-sm">
-          <thead>
-            <tr>
-              <th class="p-2">ID</th>
-              <th class="p-2">Plate Number</th>
-              <th class="p-2">Make</th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-700">
-              @foreach($vehicles as $vehicle)
-              <tr class="border-b border-gray-700 text-[#ff8800] hover:bg-[#232323] cursor-pointer"
-              onclick="selectVehicle('{{ $vehicle->vehicle_id }}')"
-              data-customer="{{ $vehicle->customer_id }}">
-                  <td class="p-2">{{ $vehicle->vehicle_id }}</td>
-                  <td class="p-2">{{ $vehicle->plate_number }}</td>
-                  <td class="p-2">{{ $vehicle->make }}</td>
-                  <td class="p-2">
-                      <button type="button"
-                          onclick="selectVehicle('{{ $vehicle->vehicle_id }}')"
-                          class="bg-orange-500 text-white px-2 py-1 rounded text-xs">
-                          Select
-                      </button>
-                  </td>
-              </tr>
-              @endforeach
-          </tbody>
-          <input type="hidden" name="vehicle_id" id="vehicle_id">
-        </table>
-      </div>
-    </div>
+   <div>
+  <label class="block text-sm text-gray-400 mb-2 tracking-wide">
+    Cars
+  </label>
 
+  <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-40 overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
+    <table class="w-full text-sm text-left text-gray-300">
+
+      <!-- Header -->
+      <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
+        <tr>
+          <th class="px-4 py-3 font-medium">Plate Number</th>
+          <th class="px-4 py-3 font-medium">Make</th>
+          <th class="px-4 py-3 text-center font-medium">Action</th>
+        </tr>
+      </thead>
+
+      <!-- Body -->
+      <tbody class="divide-y divide-gray-700">
+        @foreach($vehicles as $vehicle)
+        <tr 
+          class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
+          onclick="selectVehicle('{{ $vehicle->vehicle_id }}')"
+          data-customer="{{ $vehicle->customer_id }}"
+        >
+
+          <td class="px-4 py-3 font-medium text-white">
+            {{ $vehicle->plate_number }}
+          </td>
+
+          <td class="px-4 py-3 text-gray-300">
+            {{ $vehicle->make }}
+          </td>
+
+          <td class="px-4 py-3 text-center">
+            <button 
+              type="button"
+              onclick="event.stopPropagation(); selectVehicle('{{ $vehicle->vehicle_id }}')"
+              class="px-3 py-1.5 text-xs font-semibold rounded-lg 
+                     bg-orange-500 hover:bg-orange-600 
+                     transition duration-150 shadow-md"
+            >
+              Select
+            </button>
+          </td>
+        </tr>
+        @endforeach
+      </tbody>
+
+    </table>
+  </div>
+
+  <!-- Hidden input -->
+  <input type="hidden" name="vehicle_id" id="vehicle_id">
+</div>
   </div>
 
   <!-- Mechanic Dropdown -->
@@ -230,8 +266,12 @@
             <option value="">Select Part</option>
 
             @foreach($parts as $part)
-                <option value="{{ $part->part_id }}" data-price="{{ $part->price }}">
-                    {{ $part->part_name }}
+                <option 
+                    value="{{ $part->part_id }}" 
+                    data-price="{{ $part->price }}"
+                    data-stock="{{ $part->stock }}"
+                >
+                    {{ $part->part_name }} (Stock: {{ $part->stock }})
                 </option>
             @endforeach
 
@@ -275,16 +315,7 @@
   </div>
 
   <!-- Status -->
-  <div>
-    <label class="text-sm text-gray-400">Status</label>
-    <select name="status"
-      class="w-full bg-[#2a2a2a] border border-[#444] text-white rounded px-2 py-1" required>
-      <option value="">Select Status</option>
-      <option value="Pending">Pending</option>
-      <option value="Ongoing">Ongoing</option>
-      <option value="Completed">Completed</option>
-    </select>
-  </div>
+  <input type="hidden" name="status" value="Pending">
 
 </div>
 
@@ -348,10 +379,17 @@ function addPartRow() {
     const partId = select.value;
     const partName = select.options[select.selectedIndex].text;
     const price = parseFloat(select.options[select.selectedIndex].dataset.price);
+    const stock = parseInt(select.options[select.selectedIndex].dataset.stock);
     const qty = parseInt(qtyInput.value);
 
     if (!partId || !qty || qty <= 0) {
         alert("Select part and valid quantity");
+        return;
+    }
+
+    // 🔥 STOCK VALIDATION
+    if (qty > stock) {
+        alert("❌ Not enough stock!\nAvailable: " + stock);
         return;
     }
 
@@ -371,7 +409,6 @@ function addPartRow() {
             </td>
 
             <td>₱${price.toFixed(2)}</td>
-
             <td>₱${amount.toFixed(2)}</td>
 
             <td>
@@ -387,7 +424,6 @@ function addPartRow() {
     updateSubtotal();
     updateTotalCost();
 
-    // reset inputs
     select.value = "";
     qtyInput.value = "";
 }

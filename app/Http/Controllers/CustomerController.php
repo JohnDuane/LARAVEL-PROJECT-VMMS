@@ -8,19 +8,27 @@ use App\Models\Customer;
 class CustomerController extends Controller
 {
     public function store(Request $request)
-    {
-        Customer::create([
-            'cust_name' => $request->cust_name,
-            'contact_number' => $request->contact_number,
-            'address' => $request->address,
-        ]);
+{
+    $customer = Customer::create([
+        'cust_name' => $request->cust_name,
+        'contact_number' => $request->contact_number,
+        'address' => $request->address,
+    ]);
 
-        return redirect()->route('userdash')->with('success', 'Customer added!');
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'customer_id' => $customer->id
+        ]);
     }
+
+    // 🔁 fallback (your original behavior)
+    return redirect()->route('userdash')->with('success', 'Customer added!');
+}
 
     public function index()
 {
-    $customers = Customer::all(); // 🔥 GET DATA
+    $customers = Customer::all();
 
     return view('addcustomer', compact('customers'));
 }

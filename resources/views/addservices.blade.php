@@ -17,30 +17,61 @@
 
 <!-- TABLE -->
 <div class="w-[60%]">
-<table class="rounded-sm w-full text-sm mb-6 border border-gray-700">
+<div class="mb-6">
 
-<thead class="bg-[#ff8800] text-black">
-<tr>
-<th>ID</th>
-<th>Description</th>
-<th>Price</th>
-</tr>
-</thead>
 
-<tbody class="text-center">
-@foreach($services as $s)
-<tr class="border-b border-gray-700 cursor-pointer hover:bg-gray-800"
-onclick="selectRow({{ $s->service_id }}, '{{ $s->job_desc }}', '{{ $s->price }}')">
 
-<td>{{ $s->service_id }}</td>
-<td>{{ $s->job_desc }}</td>
-<td>{{ $s->price }}</td>
+  <!-- 📦 Table -->
+  <div class="overflow-hidden rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
 
-</tr>
-@endforeach
-</tbody>
+    <div style="scrollbar-width: none; -ms-overflow-style: none;" class="max-h-[420px] overflow-y-auto no-scrollbar">
+      <table class="w-full text-sm text-left text-gray-300">
 
-</table>
+        <!-- Header -->
+        <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
+          <tr>
+            <th class="px-4 py-3">ID</th>
+            <th class="px-4 py-3">Description</th>
+            <th class="px-4 py-3">Price</th>
+            <th class="px-4 py-3">Interval</th> <!-- NEW -->
+          </tr>
+        </thead>
+
+        <!-- Body -->
+        <tbody id="serviceTable" class="divide-y divide-gray-700">
+        @foreach($services as $s)
+        <tr 
+          class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
+          onclick="selectRow(
+            {{ $s->service_id }},
+            '{{ $s->job_desc }}',
+            '{{ $s->price }}',
+            '{{ $s->interval_value }}',
+            '{{ $s->interval_unit }}'
+          )"
+        >
+          <td class="px-4 py-3 text-gray-400">{{ $s->service_id }}</td>
+
+          <td class="px-4 py-3 font-medium text-white">
+            {{ $s->job_desc }}
+          </td>
+
+          <td class="px-4 py-3 text-gray-300">
+            ₱{{ $s->price }}
+          </td>
+
+          <td class="px-4 py-3 text-gray-300">
+            {{ $s->interval_value }} {{ $s->interval_unit }}
+          </td>
+        </tr>
+        @endforeach
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+</div>
 </div>
 
 <!-- FORM -->
@@ -66,21 +97,40 @@ class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py
 class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"/>
 </div>
 
+
+<div class="mb-4">
+<label class="block text-sm text-gray-400 mb-1">Interval Value</label>
+<input type="number" id="interval_value" name="interval_value"
+class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"/>
+</div>
+
+<div class="mb-4">
+<label class="block text-sm text-gray-400 mb-1">Interval Unit</label>
+<select id="interval_unit" name="interval_unit"
+class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm">
+  <option value="">None</option>
+  <option value="days">Days</option>
+  <option value="months">Months</option>
+  <option value="years">Years</option>
+</select>
+</div>
+
+
 <!-- Buttons -->
 <div class="flex justify-end gap-3 mt-5">
 
 <button type="button" onclick="addService()"
-class="bg-orange-600 px-6 py-2 rounded-lg text-sm">
+class="bg-[#ff8800] px-6 py-2 rounded-lg text-sm">
 Add
 </button>
 
 <button type="button" onclick="updateService()"
-class="bg-orange-600 px-6 py-2 rounded-lg text-sm">
+class="bg-[#ff8800] px-6 py-2 rounded-lg text-sm">
 Update
 </button>
 
 <button type="button" onclick="deleteService()"
-class="bg-orange-600 px-6 py-2 rounded-lg text-sm">
+class="bg-[#ff8800] px-6 py-2 rounded-lg text-sm">
 Delete
 </button>
 
@@ -96,12 +146,14 @@ Delete
 <script>
 let selectedId = null;
 
-function selectRow(id, desc, price) {
+function selectRow(id, desc, price, interval_value, interval_unit) {
     selectedId = id;
 
     document.getElementById("service_id").value = id;
     document.getElementById("desc").value = desc;
     document.getElementById("price").value = price;
+    document.getElementById("interval_value").value = interval_value;
+    document.getElementById("interval_unit").value = interval_unit;
 }
 
 function addService() {

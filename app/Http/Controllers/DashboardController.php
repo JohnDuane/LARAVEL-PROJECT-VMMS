@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Models\ViewJobOrder;
 use App\Models\Reminder;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -15,7 +16,24 @@ class DashboardController extends Controller
         $totalJobOrders = ViewJobOrder::count();
         $totalReminders = Reminder::where('status', 'pending')->count();
 
-        return view('userdash', compact('totalVehicles', 'totalJobOrders', 'totalReminders'));
+        $pendingCount = Reminder::where('status', 'pending')
+            ->whereDate('due_date', '>=', Carbon::today())
+            ->count();
+
+        $overdueCount = Reminder::where('status', 'pending')
+            ->whereDate('due_date', '<', Carbon::today())
+            ->count();
+
+        $totalAlerts = $pendingCount + $overdueCount;
+
+        return view('userdash', compact(
+            'totalVehicles', 
+            'totalJobOrders', 
+            'totalReminders', 
+            'pendingCount',
+            'overdueCount',
+            'totalAlerts')
+            );
     }
 
     public function remindersPage()

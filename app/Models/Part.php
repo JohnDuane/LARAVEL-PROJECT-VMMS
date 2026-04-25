@@ -9,4 +9,10 @@ class Part extends Model
     protected $table = 'part';
     protected $primaryKey = 'part_id';
     public $timestamps = false;
+    
+    protected $fillable = [
+    'part_name',
+    'description',
+    'price'
+    ];
 }

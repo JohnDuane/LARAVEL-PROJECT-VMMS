@@ -13,18 +13,44 @@ class ServiceController extends Controller
     }
 
     public function store(Request $request)
-    {
-        Service::create($request->all());
-        return redirect()->back();
-    }
+{
+    $request->validate([
+        'job_desc' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'interval_value' => 'nullable|integer',
+        'interval_unit' => 'nullable|string|max:20',
+    ]);
+
+    Service::create([
+        'job_desc' => $request->job_desc,
+        'price' => $request->price,
+        'interval_value' => $request->interval_value,
+        'interval_unit' => $request->interval_unit,
+    ]);
+
+    return back();
+}
 
     public function update(Request $request, $id)
-    {
-        $service = Service::findOrFail($id);
-        $service->update($request->all());
+{
+    $request->validate([
+        'job_desc' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'interval_value' => 'nullable|integer',
+        'interval_unit' => 'nullable|string|max:20',
+    ]);
 
-        return redirect()->back();
-    }
+    $service = Service::findOrFail($id);
+
+    $service->update([
+        'job_desc' => $request->job_desc,
+        'price' => $request->price,
+        'interval_value' => $request->interval_value,
+        'interval_unit' => $request->interval_unit,
+    ]);
+
+    return back();
+}
 
     public function destroy($id)
     {

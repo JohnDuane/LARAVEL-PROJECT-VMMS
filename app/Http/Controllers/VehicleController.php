@@ -17,17 +17,22 @@ class VehicleController extends Controller
     }
 
     public function store(Request $request)
-    {
-        
-        Vehicle::create([
+{
+    Vehicle::create([
         'plate_number' => $request->plate_number,
         'make' => $request->make,
         'engine_model' => $request->engine_model,
-        'customer_id' => $request->customer_id, // ✅ THIS MUST EXIST
-        ]);
+        'customer_id' => $request->customer_id,
+    ]);
 
-        return redirect()->back();
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true
+        ]);
     }
+
+    return redirect()->back();
+}
 
     public function update(Request $request, $id)
 {

@@ -30,9 +30,20 @@ class JobOrderController extends Controller
         'parts'));
 }
 
-public function index()
+public function index(Request $request)
 {
-    $data = \App\Models\ViewJobOrder::all();
+    $query = \App\Models\ViewJobOrder::query();
+
+    if ($request->status) {
+        $query->where('status', $request->status);
+    }
+
+    if ($request->search) {
+        $query->where('cust_name', 'like', "%{$request->search}%");
+    }
+
+    $data = $query->orderBy('job_order_id', 'desc')->get();
+
     return view('joborders.index', compact('data'));
 }
 
@@ -46,7 +57,6 @@ public function store(Request $request)
         'vehicle_id' => 'required',
         'staff_id' => 'required',
         'date_issued' => 'required|date',
-        'status' => 'required',
     ]);
 
     $job = \App\Models\JobOrder::create([
@@ -54,7 +64,7 @@ public function store(Request $request)
         'vehicle_id' => $request->vehicle_id,
         'staff_id' => $request->staff_id,
         'date_issued' => $request->date_issued,
-        'status' => $request->status,
+        'status' => 'Pending',
         'total_cost' => $request->total_cost,
     ]);
 

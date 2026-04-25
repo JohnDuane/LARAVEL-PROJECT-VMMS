@@ -12,4 +12,9 @@ class Reminder extends Model
         'due_date',
         'status'
     ];
+
+    public function jobOrder()
+    {
+        return $this->belongsTo(JobOrder::class, 'job_order_id');
+    }
 }

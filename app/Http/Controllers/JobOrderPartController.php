@@ -15,31 +15,38 @@ class JobOrderPartController extends Controller
     return view('job_order.parts', compact('parts', 'jobOrderId'));
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+{
     foreach ($request->parts as $index => $partId) {
 
         $qty = $request->qty[$index];
-        $part = Part::find($partId);
 
-        // ✅ STOCK CHECK
-        $stock = DB::table('stockin')
+        // 🔥 GET CURRENT STOCK
+        $stock = DB::table('view_part_stock')
             ->where('part_id', $partId)
-            ->sum('quantity_recieved');
+            ->value('stock');
 
+        // ❌ PREVENT NEGATIVE STOCK
         if ($qty > $stock) {
-            return back()->with('error', 'Not enough stock for ' . $part->part_name);
+            return back()->with('error', 'Not enough stock for selected part');
         }
 
-        JobOrderPart::create([
-            'job_order_id' => $request->job_order_id,
+        // ✅ SAVE JOB ORDER PART
+        DB::table('job_order_parts')->insert([
+            'job_order_id' => session('job_order_id'), // adjust if needed
             'part_id' => $partId,
-            'quantity' => $qty,
-            'unit_cost' => $part->price,
-            'amount' => $qty * $part->price
+            'quantity' => $qty
+        ]);
+
+        // ✅ DEDUCT STOCK (IMPORTANT)
+        DB::table('stockin')->insert([
+            'part_id' => $partId,
+            'quantity_received' => -$qty, // 🔥 NEGATIVE = STOCK OUT
+            'stock_in_arrived' => now()
         ]);
     }
 
-    return back()->with('success', 'Parts saved!');
+    return back()->with('success', 'Parts added');
 }
 
 

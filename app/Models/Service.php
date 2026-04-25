@@ -11,8 +11,10 @@ class Service extends Model
 
     protected $fillable = [
     'job_desc',
-    'price'
-    ];
+    'price',
+    'interval_value',
+    'interval_unit'
+];
 
     
 }

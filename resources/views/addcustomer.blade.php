@@ -20,39 +20,72 @@
 
     <!-- TABLE -->
     <div class="w-[60%]">
-    <table class="rounded-sm w-full text-sm mb-6 border border-gray-700">
-        <thead class="bg-[#ff8800] text-black">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Contact</th>
-                <th>Address</th>
-            </tr>
+    <div class="mb-6">
+  
+
+  <!-- 🔍 Search -->
+  <input 
+    type="text" 
+    id="searchCustomer"
+    placeholder="Search name or contact..."
+    onkeyup="filterCustomers()"
+    class="mb-3 w-full bg-[#1f1f1f] border border-gray-700 text-gray-200 
+           rounded-xl px-4 py-2.5 text-sm 
+           focus:outline-none focus:ring-2 focus:ring-orange-500"
+  />
+
+  <!-- 📦 Table -->
+  <div class="overflow-hidden rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
+
+    <div style="scrollbar-width: none; -ms-overflow-style: none;" class="max-h-[420px] overflow-y-auto no-scrollbar">
+      <table class="w-full text-sm text-left text-gray-300">
+
+        <!-- Header -->
+        <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
+          <tr>
+            <th class="px-4 py-3">ID</th>
+            <th class="px-4 py-3">Name</th>
+            <th class="px-4 py-3">Contact</th>
+            <th class="px-4 py-3">Address</th>
+          </tr>
         </thead>
 
-        <tbody class="text-center">
-            @foreach($customers as $c)
-            <tr class="border-b border-gray-700 hover:bg-gray-800 cursor-pointer"
-                onclick="selectCustomer(
-                    {{ $c->id }},
-                    {{ json_encode($c->cust_name) }},
-                    {{ json_encode($c->contact_number) }},
-                    {{ json_encode($c->address) }}
-                )">
-
-                <td>{{ $c->id }}</td>
-                <td>{{ $c->cust_name }}</td>
-                <td>{{ $c->contact_number }}</td>
-                <td>{{ $c->address }}</td>
-            </tr>
-            @endforeach
+        <!-- Body -->
+        <tbody id="customerTable" class="divide-y divide-gray-700">
+          @foreach($customers as $c)
+          <tr 
+            class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
+            onclick="selectCustomer(
+              {{ $c->id }},
+              {{ json_encode($c->cust_name) }},
+              {{ json_encode($c->contact_number) }},
+              {{ json_encode($c->address) }}
+            )"
+          >
+            <td class="px-4 py-3 text-gray-400">{{ $c->id }}</td>
+            <td class="px-4 py-3 font-medium text-white customer-name">
+              {{ $c->cust_name }}
+            </td>
+            <td class="px-4 py-3 text-gray-300 customer-contact">
+              {{ $c->contact_number }}
+            </td>
+            <td class="px-4 py-3 text-gray-300">
+              {{ $c->address }}
+            </td>
+          </tr>
+          @endforeach
         </tbody>
-    </table>
+
+      </table>
+    </div>
+
+  </div>
+</div>
     </div>
 
     <!-- FORM -->
     <div class="w-[40%]">
-    <form method="POST">
+    <form method="POST" id="customerForm">
     @csrf
 
     <input type="hidden" id="id" name="id">
@@ -86,9 +119,10 @@
     <div class="flex justify-end gap-3">
 
         <!-- SAVE -->
-        <button type="submit" formaction="{{ route('customer.store') }}"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Save
+        <button type="submit"
+            formaction="{{ route('customer.store') }}"
+            class="bg-[#ff8800] text-white rounded-lg px-6 py-2 text-sm">
+            Add
         </button>
 
         <!-- UPDATE -->
@@ -119,7 +153,155 @@ function selectCustomer(id, name, contact, address) {
     document.getElementById('contact_number').value = contact;
     document.getElementById('address').value = address;
 }
+
+
+function filterCustomers() {
+  let input = document.getElementById("searchCustomer").value.toLowerCase();
+  let rows = document.querySelectorAll("#customerTable tr");
+
+  rows.forEach(row => {
+    let name = row.querySelector(".customer-name").textContent.toLowerCase();
+    let contact = row.querySelector(".customer-contact").textContent.toLowerCase();
+
+    if (name.includes(input) || contact.includes(input)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+}
+const customerForm = document.getElementById("customerForm");
+
+customerForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const action = e.submitter.getAttribute("formaction");
+
+    // 👉 If NOT ADD → just submit normally (no modal, no fetch)
+    if (action !== "{{ route('customer.store') }}") {
+        this.action = action;   // set correct route
+        this.submit();          // normal Laravel request
+        return;
+    }
+
+    // 👉 ONLY ADD uses AJAX + modal
+    let formData = new FormData(this);
+
+    fetch(action, {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('input[name=_token]').value,
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const modal = document.getElementById('vehicleModal');
+            const content = document.getElementById('modalContent');
+
+            modal.classList.remove('hidden');
+
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-90');
+                content.classList.add('scale-100');
+            }, 10);
+
+            document.getElementById('vehicle_customer_id').value = data.customer_id;
+        }
+    })
+    .catch(err => console.error(err));
+});
+
+function closeVehicleModal() {
+    const modal = document.getElementById('vehicleModal');
+    const content = document.getElementById('modalContent');
+
+    modal.classList.add('opacity-0');
+    content.classList.remove('scale-100');
+    content.classList.add('scale-90');
+
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 500);
+}
+
+function submitVehicle() {
+    let form = document.getElementById('vehicleForm');
+    let formData = new FormData(form);
+
+    fetch("/vehicles/store", {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('input[name=_token]').value,
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("✅ Customer and Vehicle added!");
+
+        closeVehicleModal();
+        location.reload();
+    });
+}
 </script>
+
+<!-- 🚗 VEHICLE MODAL -->
+<div id="vehicleModal" 
+     class="fixed inset-0 flex items-center justify-center bg-black/60 hidden z-50 opacity-0 transition-opacity duration-1000">
+
+  <div id="modalContent"
+       class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-md 
+              transform scale-90 transition-all duration-500">
+
+    <h2 class="text-white text-lg font-medium mb-6">Add Vehicle For Customer</h2>
+
+    <form id="vehicleForm">
+      @csrf
+
+      <input type="hidden" id="vehicle_customer_id" name="customer_id">
+
+      <!-- Plate -->
+      <div class="mb-4">
+        <label class="text-sm text-gray-400">Plate Number</label>
+        <input type="text" name="plate_number" required
+          class="w-full bg-[#2a2a2a] p-2 rounded"/>
+      </div>
+
+      <!-- Make -->
+      <div class="mb-4">
+        <label class="text-sm text-gray-400">Make</label>
+        <input type="text" name="make" required
+          class="w-full bg-[#2a2a2a] p-2 rounded"/>
+      </div>
+
+      <!-- Engine -->
+      <div class="mb-4">
+        <label class="text-sm text-gray-400">Engine</label>
+        <input type="text" name="engine_model" required
+          class="w-full bg-[#2a2a2a] p-2 rounded"/>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-4">
+        <button type="button" onclick="closeVehicleModal()"
+          class="bg-gray-600 px-4 py-2 rounded">
+          Cancel
+        </button>
+
+        <button type="button" onclick="submitVehicle()"
+          class="bg-[#ff8800] px-4 py-2 rounded">
+          Add Vehicle
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
 
 </body>
 </html>

@@ -10,6 +10,9 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\JobOrderPartController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerVehicleController;
+use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\PartsController;
+
 
 
 Route::get('/', function () {
@@ -25,6 +28,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/addservices', [ServiceController::class, 'index']);
 
+Route::post('/parts/stockin/{id}', [PartsController::class, 'stockIn']);
 
 Route::get('/joborderform', [JobOrderController::class, 'create']);
 
@@ -35,6 +39,8 @@ Route::post('/job-order/store', [JobOrderController::class, 'store'])
     ->name('job-order.store');
 
 Route::get('/userdash', [DashboardController::class, 'index'])->name('userdash');
+
+Route::post('/vehicles/store', [VehicleController::class, 'store']);
 
 Route::get('/job-orders', [JobOrderController::class, 'index']);
 
@@ -47,9 +53,10 @@ Route::get('/addmechanic', function () {
     return view('addmechanic');
 })->name('addemchanic');
 
-Route::get('/reminders', [DashboardController::class, 'remindersPage'])->name('reminders');
-
 Route::post('/reminders/store', [DashboardController::class, 'storeReminder'])->name('reminders.store');
+
+Route::get('/stockin', [PartsController::class, 'index'])
+    ->name('stockin');
 
 Route::get('/viewcustomervehicles', [CustomerVehicleController::class, 'index']);
 
@@ -77,6 +84,15 @@ Route::get('/services', [ServiceController::class, 'index']);
 Route::post('/services/store', [ServiceController::class, 'store']);
 Route::post('/services/update/{id}', [ServiceController::class, 'update']);
 Route::post('/services/delete/{id}', [ServiceController::class, 'destroy']);
+
+Route::get('/reminders', [ReminderController::class, 'index']);
+Route::post('/reminders/store', [ReminderController::class, 'store']);
+Route::get('/reminders/complete/{id}', [ReminderController::class, 'complete']);
+
+Route::get('/stockin', [PartsController::class, 'index'])->name('stockin');
+Route::post('/stockin/store', [PartsController::class, 'store']);
+Route::post('/stockin/update/{id}', [PartsController::class, 'update']);
+Route::post('/stockin/delete/{id}', [PartsController::class, 'delete']);
 
 Route::get('/job-order/pdf/{id}', [JobOrderController::class, 'generatePDF'])
     ->name('job-order.pdf');

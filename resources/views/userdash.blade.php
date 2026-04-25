@@ -70,8 +70,18 @@
         <img src="{{ asset('icons/material-symbols_warning.png') }}" alt="">
         <div>
           <p class="text-xs text-gray-400">Alerts / Reminders</p>
-          <p class="text-lg font-semibold">{{ $totalReminders }}</p>
-          <p class="text-xs text-gray-500">View Reminders</p>
+
+              <div class="flex items-center gap-2">
+                  <!-- Total -->
+                  <p class="text-lg font-semibold text-white">
+                    {{ $totalAlerts }}
+                  </p>
+
+                </div>
+          <p class="text-xs text-gray-500">
+            {{ $overdueCount }} overdue • {{ $pendingCount }} pending
+          </p>
+
         </div>
       </button>
 

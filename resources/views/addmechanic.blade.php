@@ -11,40 +11,76 @@
     @include('layouts.sidenav')
 
     <main class="flex-1 p-6 min-h-screen">
-<h1 class="text-3xl font-bold text-white">Staff</h1>
+<h1 class="text-3xl font-bold text-white">Mechanics/Staff</h1>
 
 <div class="max-w-7xl mx-auto pt-5 flex gap-6">
 
     <!-- TABLE -->
     <div class="w-[60%]">
-    <table class="rounded-sm w-full text-sm mb-6 border border-gray-700">
-        <thead class="bg-[#ff8800] text-black">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Contact</th>
-            </tr>
+    <div class="mb-6">
+  
+
+  <!-- 🔍 Search -->
+  <input 
+    type="text" 
+    id="searchStaff"
+    placeholder="Search name or contact..."
+    onkeyup="filterStaff()"
+    class="mb-3 w-full bg-[#1f1f1f] border border-gray-700 text-gray-200 
+           rounded-xl px-4 py-2.5 text-sm 
+           focus:outline-none focus:ring-2 focus:ring-orange-500"
+  />
+
+  <!-- 📦 Table -->
+  <div class="overflow-hidden rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
+
+    <div style="scrollbar-width: none; -ms-overflow-style: none;" class="max-h-[420px] overflow-y-auto no-scrollbar">
+      <table class="w-full text-sm text-left text-gray-300">
+
+        <!-- Header -->
+        <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
+          <tr>
+            <th class="px-4 py-3">ID</th>
+            <th class="px-4 py-3">Name</th>
+            <th class="px-4 py-3">Role</th>
+            <th class="px-4 py-3">Contact</th>
+          </tr>
         </thead>
 
-        <tbody class="text-center">
-            @foreach($staff as $s)
-            <tr class="border-b border-gray-700 hover:bg-gray-800 cursor-pointer"
-                onclick="selectStaff(
-                    {{ $s->staff_id }},
-                    '{{ $s->staff_name }}',
-                    '{{ $s->role }}',
-                    '{{ $s->contact_number }}'
-                )">
+        <!-- Body -->
+        <tbody id="staffTable" class="divide-y divide-gray-700">
+          @foreach($staff as $s)
+          <tr 
+            class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
+            onclick="selectStaff(
+              {{ $s->staff_id }},
+              '{{ $s->staff_name }}',
+              '{{ $s->role }}',
+              '{{ $s->contact_number }}'
+            )"
+          >
+            <td class="px-4 py-3 text-gray-400">{{ $s->staff_id }}</td>
 
-                <td>{{ $s->staff_id }}</td>
-                <td>{{ $s->staff_name }}</td>
-                <td>{{ $s->role }}</td>
-                <td>{{ $s->contact_number }}</td>
-            </tr>
-            @endforeach
+            <td class="px-4 py-3 font-medium text-white staff-name">
+              {{ $s->staff_name }}
+            </td>
+
+            <td class="px-4 py-3 text-gray-300">
+              {{ $s->role }}
+            </td>
+
+            <td class="px-4 py-3 text-gray-300 staff-contact">
+              {{ $s->contact_number }}
+            </td>
+          </tr>
+          @endforeach
         </tbody>
-    </table>
+
+      </table>
+    </div>
+
+  </div>
+</div>
     </div>
 
     <!-- FORM -->
@@ -113,6 +149,22 @@ function selectStaff(id, name, role, contact) {
     document.getElementById('staff_name').value = name;
     document.getElementById('role').value = role;
     document.getElementById('contact_number').value = contact;
+}
+
+function filterStaff() {
+  let input = document.getElementById("searchStaff").value.toLowerCase();
+  let rows = document.querySelectorAll("#staffTable tr");
+
+  rows.forEach(row => {
+    let name = row.querySelector(".staff-name").textContent.toLowerCase();
+    let contact = row.querySelector(".staff-contact").textContent.toLowerCase();
+
+    if (name.includes(input) || contact.includes(input)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
 }
 </script>
     

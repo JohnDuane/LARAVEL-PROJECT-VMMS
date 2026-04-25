@@ -33,6 +33,14 @@
 <div class="overflow-hidden">
   <label class="block text-sm text-gray-400 mb-2 tracking-wide">Customers</label>
 
+<input 
+    type="text" 
+    id="customerSearch"
+    placeholder="Search customer..."
+    onkeyup="filterCustomers()"
+    class="w-full mb-2 bg-[#2a2a2a] border border-[#444] text-white px-3 py-2 rounded"
+>
+
   <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-40 overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
     <table class="w-full text-sm text-left text-gray-300">
       
@@ -46,7 +54,7 @@
       </thead>
 
       <!-- Body -->
-      <tbody class="divide-y divide-gray-700">
+      <tbody id="customerTableBody" class="divide-y divide-gray-700">
         @foreach($customers as $customer)
         <tr 
           class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
@@ -75,15 +83,25 @@
     </table>
   </div>
 
-  <!-- Hidden input -->
   <input type="hidden" name="customer_id" id="customer_id">
 </div>
+
+
+
 
     <!-- Cars -->
    <div>
   <label class="block text-sm text-gray-400 mb-2 tracking-wide">
     Cars
   </label>
+
+  <input 
+    type="text" 
+    id="vehicleSearch"
+    placeholder="Search plate or make..."
+    onkeyup="filterVehicles()"
+    class="w-full mb-2 bg-[#2a2a2a] border border-[#444] text-white px-3 py-2 rounded"
+>
 
   <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-40 overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
     <table class="w-full text-sm text-left text-gray-300">
@@ -98,11 +116,11 @@
       </thead>
 
       <!-- Body -->
-      <tbody class="divide-y divide-gray-700">
+      <tbody class="divide-y divide-gray-700" id="vehicleTableBody">
         @foreach($vehicles as $vehicle)
         <tr 
           class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
-          onclick="selectVehicle('{{ $vehicle->vehicle_id }}')"
+          onclick="event.stopPropagation(); selectVehicle('{{ $vehicle->vehicle_id }}', '{{ $vehicle->plate_number }}', '{{ $vehicle->make }}')"
           data-customer="{{ $vehicle->customer_id }}"
         >
 
@@ -200,18 +218,33 @@
     <!-- ADD SERVICE -->
     <div class="grid grid-cols-3 gap-3 items-center mt-4">
 
-        <select id="serviceSelect"
-            class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1">
+        <div class="relative w-full">
 
-            <option value="">Select Service</option>
+            <input 
+                type="text" 
+                id="service_input"
+                onclick="toggleServiceDropdown()"
+                placeholder="Select or search service"
+                class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"
+            />
 
-            @foreach($services as $service)
-                <option value="{{ $service->service_id }}" data-price="{{ $service->price }}">
-                    {{ $service->job_desc }}
-                </option>
-            @endforeach
+            <ul id="serviceDropdown"
+                class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">
 
-        </select>
+                @foreach($services as $service)
+                    <li 
+                        class="px-3 py-2 text-sm text-gray-200 hover:bg-green-600 cursor-pointer"
+                        onclick="selectService('{{ $service->service_id }}', '{{ $service->job_desc }}', '{{ $service->price }}')"
+                    >
+                        {{ $service->job_desc }} - ₱{{ $service->price }}
+                    </li>
+                @endforeach
+
+            </ul>
+        </div>
+
+        <input type="hidden" id="service_id">
+        <input type="hidden" id="service_price">
 
         <div class="text-zinc-500 text-sm">auto</div>
 
@@ -260,22 +293,34 @@
     <div class="grid grid-cols-5 gap-3 items-center mt-4">
 
         <!-- 🔥 DYNAMIC PARTS -->
-        <select id="partSelect"
-            class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1">
-            
-            <option value="">Select Part</option>
+        <div class="relative w-full">
 
-            @foreach($parts as $part)
-                <option 
-                    value="{{ $part->part_id }}" 
-                    data-price="{{ $part->price }}"
-                    data-stock="{{ $part->stock }}"
-                >
-                    {{ $part->part_name }} (Stock: {{ $part->stock }})
-                </option>
-            @endforeach
+            <input 
+                type="text" 
+                id="part_input"
+                onclick="togglePartDropdown()"
+                placeholder="Select or search part"
+                class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"
+            />
 
-        </select>
+            <ul id="partDropdown"
+                class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">
+
+                @foreach($parts as $part)
+                    <li 
+                        class="px-3 py-2 text-sm text-gray-200 hover:bg-orange-600 cursor-pointer"
+                        onclick="selectPartDropdown('{{ $part->part_id }}', '{{ $part->part_name }}', '{{ $part->price }}', '{{ $part->stock }}')"
+                    >
+                        {{ $part->part_name }} (Stock: {{ $part->stock }})
+                    </li>
+                @endforeach
+
+            </ul>
+        </div>
+
+        <input type="hidden" id="part_id_selected">
+        <input type="hidden" id="part_price">
+        <input type="hidden" id="part_stock">
 
         <!-- QTY -->
         <input type="number" id="qtyInput" placeholder="Qty"
@@ -366,28 +411,21 @@ document.addEventListener('click', function(e) {
         dropdown.classList.add('hidden');
     }
 });
-</script>
 
-
-<script>
 let partsSubtotal = 0;
 
 function addPartRow() {
-    const select = document.getElementById("partSelect");
-    const qtyInput = document.getElementById("qtyInput");
-
-    const partId = select.value;
-    const partName = select.options[select.selectedIndex].text;
-    const price = parseFloat(select.options[select.selectedIndex].dataset.price);
-    const stock = parseInt(select.options[select.selectedIndex].dataset.stock);
-    const qty = parseInt(qtyInput.value);
+    const partId = document.getElementById("part_id_selected").value;
+    const partName = document.getElementById("part_input").value;
+    const price = parseFloat(document.getElementById("part_price").value);
+    const stock = parseInt(document.getElementById("part_stock").value);
+    const qty = parseInt(document.getElementById("qtyInput").value);
 
     if (!partId || !qty || qty <= 0) {
         alert("Select part and valid quantity");
         return;
     }
 
-    // 🔥 STOCK VALIDATION
     if (qty > stock) {
         alert("❌ Not enough stock!\nAvailable: " + stock);
         return;
@@ -402,15 +440,12 @@ function addPartRow() {
                 ${partName}
                 <input type="hidden" name="parts[]" value="${partId}">
             </td>
-
             <td>
                 <input type="number" name="qty[]" value="${qty}"
                     class="bg-zinc-800 w-16 px-2 py-1">
             </td>
-
             <td>₱${price.toFixed(2)}</td>
             <td>₱${amount.toFixed(2)}</td>
-
             <td>
                 <button type="button" onclick="removePartRow(this, ${amount})"
                     class="text-red-500">✕</button>
@@ -424,8 +459,8 @@ function addPartRow() {
     updateSubtotal();
     updateTotalCost();
 
-    select.value = "";
-    qtyInput.value = "";
+    document.getElementById("part_input").value = "";
+    document.getElementById("qtyInput").value = "";
 }
 
 function removePartRow(btn, amount) {
@@ -444,41 +479,46 @@ function updateSubtotal() {
 function selectCustomer(id, name) {
     document.getElementById('customer_id').value = id;
 
-    // OPTIONAL: filter vehicles based on selected customer
+    const input = document.getElementById("customerSearch");
+
+    // ✅ CLEAR TEXT + SET PLACEHOLDER
+    input.value = "";
+    input.placeholder = name;
+
+    // FILTER VEHICLES
     document.querySelectorAll('[data-customer]').forEach(row => {
-        if (row.getAttribute('data-customer') == id) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
+        row.style.display = (row.getAttribute('data-customer') == id) ? '' : 'none';
     });
 
-    document.querySelectorAll("tr").forEach(row => {
+    // highlight
+    document.querySelectorAll("#customerTableBody tr").forEach(row => {
         row.classList.remove("bg-gray-600");
     });
 
     event.currentTarget.classList.add("bg-gray-600");
-
 }
 
-function selectVehicle(id) {
+function selectVehicle(id, plate, make) {
     document.getElementById('vehicle_id').value = id;
 
-    document.querySelectorAll("tr").forEach(row => {
-        row.classList.remove("bg-gray-600");
-    });
+    const input = document.getElementById("vehicleSearch");
 
-    event.currentTarget.classList.add("bg-gray-600");
+    // ✅ SET PLACEHOLDER
+    input.value = "";
+    input.placeholder = plate + " - " + make;
+
+    // highlight
+    document.querySelectorAll("#vehicleTableBody tr").forEach(r => {
+        r.classList.remove("bg-gray-600");
+    });
 }
 
 let servicesSubtotal = 0;
 
 function addServiceRow() {
-    const select = document.getElementById("serviceSelect");
-
-    const serviceId = select.value;
-    const serviceName = select.options[select.selectedIndex].text;
-    const price = parseFloat(select.options[select.selectedIndex].dataset.price);
+    const serviceId = document.getElementById("service_id").value;
+    const serviceName = document.getElementById("service_input").value;
+    const price = parseFloat(document.getElementById("service_price").value);
 
     if (!serviceId) {
         alert("Select a service");
@@ -509,7 +549,7 @@ function addServiceRow() {
     updateServiceSubtotal();
     updateTotalCost();
 
-    select.value = "";
+    document.getElementById("service_input").value = "";
 }
 
 function removeServiceRow(btn, price) {
@@ -531,6 +571,92 @@ function updateTotalCost() {
     document.getElementById("total_cost").value = total.toFixed(2);
 }
 
+
+document.getElementById("mechanic_input").addEventListener("keyup", function() {
+    let input = this.value.toLowerCase();
+    let items = document.querySelectorAll("#dropdown li");
+
+    items.forEach(item => {
+        let text = item.textContent.toLowerCase();
+        item.style.display = text.includes(input) ? "" : "none";
+    });
+});
+
+
+
+//service drop down logic
+function toggleServiceDropdown() {
+    document.getElementById('serviceDropdown').classList.toggle('hidden');
+}
+
+function selectService(id, name, price) {
+    document.getElementById('service_input').value = name;
+    document.getElementById('service_id').value = id;
+    document.getElementById('service_price').value = price;
+
+    document.getElementById('serviceDropdown').classList.add('hidden');
+}
+
+// SEARCH
+document.getElementById("service_input").addEventListener("keyup", function() {
+    let input = this.value.toLowerCase();
+    let items = document.querySelectorAll("#serviceDropdown li");
+
+    items.forEach(item => {
+        let text = item.textContent.toLowerCase();
+        item.style.display = text.includes(input) ? "" : "none";
+    });
+});
+
+
+//part drop down logic
+function togglePartDropdown() {
+    document.getElementById('partDropdown').classList.toggle('hidden');
+}
+
+function selectPartDropdown(id, name, price, stock) {
+    document.getElementById('part_input').value = name;
+    document.getElementById('part_id_selected').value = id;
+    document.getElementById('part_price').value = price;
+    document.getElementById('part_stock').value = stock;
+
+    document.getElementById('partDropdown').classList.add('hidden');
+}
+
+// SEARCH
+document.getElementById("part_input").addEventListener("keyup", function() {
+    let input = this.value.toLowerCase();
+    let items = document.querySelectorAll("#partDropdown li");
+
+    items.forEach(item => {
+        let text = item.textContent.toLowerCase();
+        item.style.display = text.includes(input) ? "" : "none";
+    });
+});
+
+
+
+function filterCustomers() {
+    let input = document.getElementById("customerSearch").value.toLowerCase();
+    let rows = document.querySelectorAll("#customerTableBody tr");
+
+    rows.forEach(row => {
+        let name = row.children[1].textContent.toLowerCase();
+        row.style.display = name.includes(input) ? "" : "none";
+    });
+}
+
+function filterVehicles() {
+    let input = document.getElementById("vehicleSearch").value.toLowerCase();
+    let rows = document.querySelectorAll("#vehicleTableBody tr");
+
+    rows.forEach(row => {
+        let plate = row.children[0].textContent.toLowerCase();
+        let make = row.children[1].textContent.toLowerCase();
+
+        row.style.display = (plate.includes(input) || make.includes(input)) ? "" : "none";
+    });
+}
 
 </script>
 

@@ -110,4 +110,19 @@ public function stockIn(Request $request, $id)
 
     return redirect()->back()->with('success', 'Part deleted');
 }
+
+public function adjustStock(Request $request, $id)
+{
+    $request->validate([
+        'quantity' => 'required|integer'
+    ]);
+
+    StockIn::create([
+        'part_id' => $id,
+        'quantity_received' => $request->quantity, // 🔥 can be + or -
+        'stock_in_arrived' => now()
+    ]);
+
+    return redirect()->back()->with('success', 'Stock adjusted successfully');
+}
 }

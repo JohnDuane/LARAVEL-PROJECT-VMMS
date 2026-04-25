@@ -110,10 +110,37 @@
         <button type="button" onclick="addPart()" class="btn">Add</button>
         <button type="button" onclick="updatePart()" class="btn">Update</button>
         <button type="button" onclick="deletePart()" class="btn">Delete</button>
+        <button type="button" onclick="openAdjustModal()" 
+            class="bg-blue-500 px-4 py-2 rounded-lg">
+            Adjust Stock
+        </button>
     </div>
 
 </div>
         </form>
+
+<div id="adjustModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center">
+    <div class="bg-[#1f1f1f] p-6 rounded-xl w-80">
+
+        <h2 class="text-white text-lg mb-4">Adjust Stock</h2>
+
+        <!-- Quantity -->
+        <input type="number" id="adjustQty" placeholder="Enter quantity"
+            class="w-full mb-3 px-3 py-2 rounded bg-[#2a2a2a] text-white">
+
+        <!-- Action -->
+        <select id="adjustType" class="w-full mb-4 px-3 py-2 rounded bg-[#2a2a2a] text-white">
+            <option value="add">➕ Add Stock</option>
+            <option value="minus">➖ Deduct Stock</option>
+        </select>
+
+        <!-- Buttons -->
+        <div class="flex justify-end gap-2">
+            <button onclick="closeAdjustModal()" class="px-3 py-1 bg-gray-500 rounded">Cancel</button>
+            <button onclick="submitAdjustStock()" class="px-3 py-1 bg-blue-500 rounded">Apply</button>
+        </div>
+    </div>
+</div>
     </div>
 
 </div>
@@ -191,6 +218,48 @@ function filterParts() {
 
         row.style.display = name.includes(input) ? "" : "none";
     });
+}
+
+function openAdjustModal() {
+    if (!selectedId) {
+        alert("Select a part first");
+        return;
+    }
+
+    document.getElementById("adjustModal").classList.remove("hidden");
+    document.getElementById("adjustModal").classList.add("flex");
+}
+
+function closeAdjustModal() {
+    document.getElementById("adjustModal").classList.add("hidden");
+}
+
+function submitAdjustStock() {
+    const qty = parseInt(document.getElementById("adjustQty").value);
+    const type = document.getElementById("adjustType").value;
+
+    if (!qty || qty <= 0) {
+        alert("Enter valid quantity");
+        return;
+    }
+
+    // 🔥 convert to positive/negative
+    let finalQty = type === "minus" ? -qty : qty;
+
+    // 🔥 create hidden form dynamically
+    let form = document.createElement("form");
+    form.method = "POST";
+    form.action = "/stock-adjust/" + selectedId;
+
+    let token = document.querySelector('input[name="_token"]').value;
+
+    form.innerHTML = `
+        <input type="hidden" name="_token" value="${token}">
+        <input type="hidden" name="quantity" value="${finalQty}">
+    `;
+
+    document.body.appendChild(form);
+    form.submit();
 }
 
 </script>

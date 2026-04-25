@@ -32,6 +32,8 @@ Route::post('/parts/stockin/{id}', [PartsController::class, 'stockIn']);
 
 Route::get('/joborderform', [JobOrderController::class, 'create']);
 
+Route::post('/stock-adjust/{id}', [PartsController::class, 'adjustStock']);
+
 Route::get('/job-order/{id}/parts', [JobOrderPartController::class, 'create']);
 Route::post('/job-order/parts/store', [JobOrderPartController::class, 'store']);
 

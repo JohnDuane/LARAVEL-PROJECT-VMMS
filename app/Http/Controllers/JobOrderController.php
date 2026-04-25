@@ -79,12 +79,33 @@ if ($request->services) {
 }
 
 // SAVE PARTS
+// SAVE PARTS + DEDUCT STOCK
 if ($request->parts) {
     foreach ($request->parts as $index => $partId) {
+
+        $qty = $request->qty[$index];
+
+        // 🔥 CHECK STOCK FIRST
+        $stock = \DB::table('view_part_stock')
+            ->where('part_id', $partId)
+            ->value('stock');
+
+        if ($qty > $stock) {
+            return back()->with('error', 'Not enough stock for selected part');
+        }
+
+        // ✅ SAVE JOB ORDER PART
         \DB::table('job_order_parts')->insert([
             'job_order_id' => $job->job_order_id,
             'part_id' => $partId,
-            'quantity' => $request->qty[$index],
+            'quantity' => $qty,
+        ]);
+
+        // ✅ 🔥 DEDUCT STOCK
+        \DB::table('stockin')->insert([
+            'part_id' => $partId,
+            'quantity_received' => -$qty, // NEGATIVE = STOCK OUT
+            'stock_in_arrived' => now()
         ]);
     }
 }

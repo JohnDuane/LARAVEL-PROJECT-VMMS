@@ -52,7 +52,7 @@ class JobOrderPartController extends Controller
 
 public function showForm()
 {
-    $parts = Part::all(); // 🔥 GET DATA FROM DATABASE
+    $parts = Part::all();
 
     return view('joborderform', compact('parts'));
 }

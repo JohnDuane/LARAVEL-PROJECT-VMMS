@@ -41,7 +41,7 @@
             </tr>
           </thead>
 
-          <tbody id="jobTable" class="divide-y divide-gray-700">
+          <tbody id="jobTable" class="h-[230px] divide-y divide-gray-700">
             @foreach($jobOrders as $job)
             <tr class="hover:bg-[#2e2e2e] transition duration-150">
               <td class="px-4 py-3 text-gray-400">{{ $job->job_order_id }}</td>

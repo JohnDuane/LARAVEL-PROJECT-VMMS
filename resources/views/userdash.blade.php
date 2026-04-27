@@ -9,6 +9,43 @@
 
 </head>
     @include('layouts.logout')
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('jobOrdersChart').getContext('2d');
+
+    const jobOrdersChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @json($labels),
+            datasets: [{
+                label: 'Job Orders',
+                data: @json($data),
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    labels: { color: '#fff' }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#ccc' }
+                },
+                y: {
+                    ticks: { color: '#ccc' }
+                }
+            }
+        }
+    });
+</script>
+
+
 <body>
     @include('layouts.sidenav')
 
@@ -17,27 +54,15 @@
        
 
   <!-- Main Card -->
-  <div class="bg-zinc-900 rounded-2xl p-4 mt-3 md:p-6 flex flex-col md:flex-row gap-4 items-center shadow-lg">
+  <div class="bg-zinc-900 rounded-2xl p-4 md:p-6 shadow-lg">
 
-    <!-- Image -->
-    <img 
-      src="{{ asset('images/LOGO-DARk.png') }}" 
-      class="w-full md:w-64 h-40 object-cover rounded-xl"
-    />
+  <h2 class="text-white text-lg md:text-xl font-semibold mb-4">
+    Job Orders Growth (Weekly)
+  </h2>
 
-    <!-- Info -->
-    <div class="text-white w-full">
-      <h2 class="text-lg md:text-xl font-semibold">
-        2006 Lamborghini Huracan
-      </h2>
+  <canvas id="jobOrdersChart" class="w-full h-40"></canvas>
 
-      <div class="mt-2 text-sm text-gray-300 space-y-1">
-        <p>Customer:</p>
-        <p>Contact:</p>
-        <p>Plate No:</p>
-      </div>
-    </div>
-  </div>
+</div>
 
   <!-- Stats -->
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
@@ -99,9 +124,9 @@
       <span class="text-sm mt-2">Add Job Order</span>
     </button>
 
-    <button class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
+    <button onclick="window.location.href='/addsupplier'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
       <span class="text-2xl">🖨️</span>
-      <span class="text-sm mt-2">Print Record</span>
+      <span class="text-sm mt-2">Add Supplier</span>
     </button>
 
     <button onclick="window.location.href='/addmechanic'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">

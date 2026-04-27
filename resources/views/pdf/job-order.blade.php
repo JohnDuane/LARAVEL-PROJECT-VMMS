@@ -210,10 +210,29 @@
     </div>
 
     <!-- SIGNATURE -->
-    <div class="signature">
-        <p>Customer Signature: __________________________</p>
-        <p>Date: __________________________</p>
-    </div>
+<div class="signature">
+    <table class="no-border" style="width: 100%; margin-top: 20px;">
+        <tr>
+            <td style="text-align: center;">
+                __________________________<br>
+                <strong>Customer Signature</strong>
+                {{ $view->cust_name ?? 'N/A' }}`
+            </td>
+
+            <td style="text-align: center;">
+                __________________________<br>
+                <strong>Supervisor</strong><br>
+                Bernie S. Aranda
+            </td>
+
+            <td style="text-align: center;">
+                __________________________<br>
+                <strong>Mechanic</strong><br>
+                {{ $view->mechanic_name ?? 'N/A' }}
+            </td>
+        </tr>
+    </table>
+</div>
 
     <!-- FOOTER -->
     <div class="footer">

@@ -129,14 +129,12 @@ public function generatePDF($id)
 // GET CUSTOMER + VEHICLE + MECHANIC (from view or joins)
 $view = \App\Models\ViewJobOrder::find($id);
 
-// GET SERVICES
 $services = \DB::table('job_order_services')
     ->join('services', 'job_order_services.service_id', '=', 'services.service_id')
     ->where('job_order_services.job_order_id', $id)
     ->select('services.job_desc as name', 'services.price')
     ->get();
 
-// GET PARTS
 $parts = \DB::table('job_order_parts')
     ->join('part', 'job_order_parts.part_id', '=', 'part.part_id')
     ->where('job_order_parts.job_order_id', $id) // ✅ IMPORTANT

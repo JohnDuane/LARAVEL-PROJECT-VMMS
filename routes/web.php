@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerVehicleController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\PartsController;
+use App\Http\Controllers\SupplierController;
 
 
 
@@ -25,6 +26,8 @@ Route::get('/login', function () {
 
 
 Route::post('/login', [AuthController::class, 'login']);
+
+
 
 Route::get('/addservices', [ServiceController::class, 'index']);
 
@@ -95,6 +98,11 @@ Route::get('/stockin', [PartsController::class, 'index'])->name('stockin');
 Route::post('/stockin/store', [PartsController::class, 'store']);
 Route::post('/stockin/update/{id}', [PartsController::class, 'update']);
 Route::post('/stockin/delete/{id}', [PartsController::class, 'delete']);
+
+Route::get('/addsupplier', [SupplierController::class, 'index']);
+Route::post('/suppliers/store', [SupplierController::class, 'store']);
+Route::post('/suppliers/update/{id}', [SupplierController::class, 'update']);
+Route::post('/suppliers/delete/{id}', [SupplierController::class, 'delete']);
 
 Route::get('/job-order/pdf/{id}', [JobOrderController::class, 'generatePDF'])
     ->name('job-order.pdf');

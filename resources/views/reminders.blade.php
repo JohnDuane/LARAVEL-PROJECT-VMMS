@@ -134,33 +134,39 @@
 
 
 
-<div class="mt-6 bg-zinc-900 p-4 rounded-xl text-white">
+<div class="mt-6 bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl text-white shadow-lg border border-zinc-800 max-w-md">
 
-  <h2 class="text-lg font-semibold mb-3">Create Reminder</h2>
+  <h2 class="text-xl font-semibold mb-2">Create Reminder</h2>
+  <p class="text-sm text-zinc-400 mb-4" id="selectedJobText">No job selected</p>
 
-  <p id="selectedJobText">No job selected</p>
-
-  <form action="/reminders/store" method="POST">
+  <form action="/reminders/store" method="POST" class="space-y-4">
     @csrf
 
     <input type="hidden" name="job_order_id" id="job_order_id">
 
-    <div class="mt-3">
-      <label>Description</label>
+    <!-- Description -->
+    <div>
+      <label class="text-sm text-zinc-300">Description</label>
       <input type="text" name="description"
-        class="w-full bg-gray-800 p-2 rounded">
+        class="w-full mt-1 bg-zinc-800 border border-zinc-700 p-2.5 rounded-lg 
+               focus:outline-none focus:ring-2 focus:ring-[#ff8800] focus:border-[#ff8800] transition">
     </div>
 
-    <div class="mt-3">
-      <label>Due Date</label>
+    <!-- Due Date -->
+    <div>
+      <label class="text-sm text-zinc-300">Due Date</label>
       <input type="date" name="due_date"
-        class="w-full bg-gray-800 p-2 rounded">
+        class="w-full mt-1 bg-zinc-800 border border-zinc-700 p-2.5 rounded-lg 
+               focus:outline-none focus:ring-2 focus:ring-[#ff8800] focus:border-[#ff8800] transition">
     </div>
 
+    <!-- Button -->
     <button type="submit"
-      class="mt-4 bg-[#ff8800] px-4 py-2 rounded">
+      class="w-full mt-2 bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98]
+             transition font-medium py-2.5 rounded-lg text-black shadow-md">
       Create Reminder
     </button>
+
   </form>
 </div>
 

@@ -68,16 +68,11 @@
     </div>
 
     <!-- Button -->
-    <button type="submit" value="submit" style="border-radius:10px" class="w-full bg-gray-900 text-white py-2 hover:bg-black transition">
+    <button type="submit" value="submit" style="border-radius:10px" class="mb-[100px] w-full bg-gray-900 text-white py-2 hover:bg-black transition">
       Sign in
     </button>
 
 
-    <!-- Register -->
-    <p class="text-center text-xs mt-4 text-white/70">
-      Don’t have an account?
-      <a href="#" class="text-orange-300 hover:underline">Sign up for free</a>
-    </p>
 
 </form>
   </div>

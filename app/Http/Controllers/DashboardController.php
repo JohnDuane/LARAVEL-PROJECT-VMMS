@@ -39,8 +39,15 @@ class DashboardController extends Controller
         ->orderBy('week')
         ->get();
 
-    $labels = [];
-    $data = [];
+    $count = 1;
+    foreach ($jobOrders as $order) {
+        $labels[] = 'Week ' . $count++;
+        $data[] = $order->total;
+    }
+    //for chart testing
+    // $labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+    // $data = [2, 5, 3, 8];
+
 
     if ($jobOrders->isEmpty()) {
         $labels = ['No Data Yet'];

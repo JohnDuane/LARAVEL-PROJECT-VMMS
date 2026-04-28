@@ -12,57 +12,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-    const ctx = document.getElementById('jobOrdersChart').getContext('2d');
-
-    const jobOrdersChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: @json($labels),
-            datasets: [{
-                label: 'Job Orders',
-                data: @json($data),
-                borderWidth: 2,
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    labels: { color: '#fff' }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: { color: '#ccc' }
-                },
-                y: {
-                    ticks: { color: '#ccc' }
-                }
-            }
-        }
-    });
-</script>
+<!-- <canvas id="jobOrdersChart" class="w-full h-40"></canvas> -->
 
 
 <body>
     @include('layouts.sidenav')
 
     <main class="flex-1 p-6 min-h-screen">
-        <h1 class="text-3xl font-bold text-white">Dashboard</h1>
+        <h1 class="text-3xl font-bold text-white mb-[9px]">Dashboard</h1>
        
 
   <!-- Main Card -->
   <div class="bg-zinc-900 rounded-2xl p-4 md:p-6 shadow-lg">
 
-  <h2 class="text-white text-lg md:text-xl font-semibold mb-4">
-    Job Orders Growth (Weekly)
-  </h2>
+    <h2 class="text-white text-lg md:text-xl font-semibold mb-4">
+      Job Orders Growth (Weekly)
+    </h2>
 
-  <canvas id="jobOrdersChart" class="w-full h-40"></canvas>
-
-</div>
+    <!-- ✅ GRAPH INSIDE CARD -->
+      <div class-"h-56">
+        <canvas id="jobOrdersChart"></canvas>
+      </div>
+  </div>
 
   <!-- Stats -->
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
@@ -145,5 +116,52 @@
     </main>
 
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const ctx = document.getElementById('jobOrdersChart');
+
+    if (!ctx) return; // safety check
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @json($labels),
+            datasets: [{
+                label: 'Job Orders',
+                data: @json($data),
+                borderColor: '#ff8800',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: false,
+                pointRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: '#fff' }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#ccc' }
+                },
+                y: {
+                    ticks: { color: '#ccc' }
+                }
+            }
+        }
+    });
+
+});
+</script>
+
+
 </body>
 </html>

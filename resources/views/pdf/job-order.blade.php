@@ -92,7 +92,7 @@
 
 <div class="container">
 
-    <img src=" {{ asset('images/HEAD-LOGO-DARK.png') }}" alt="BSA Logo" style="width: 80px; height: auto; position: absolute; top: 20px; left: 20px;">
+    <img src="{{ public_path('images/HEAD-LOGO-DARK.png') }}" alt="BSA Logo" style="width: 130px; height: auto; position: absolute;">
 
 
     <div class="header">
@@ -215,7 +215,7 @@
         <tr>
             <td style="text-align: center;">
                 __________________________<br>
-                <strong>Customer Signature</strong>
+                <strong>Customer Signature</strong><br>
                 {{ $view->cust_name ?? 'N/A' }}`
             </td>
 

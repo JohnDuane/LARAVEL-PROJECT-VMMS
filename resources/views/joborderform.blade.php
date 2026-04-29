@@ -307,12 +307,20 @@
                 class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">
 
                 @foreach($parts as $part)
-                    <li 
-                        class="px-3 py-2 text-sm text-gray-200 hover:bg-orange-600 cursor-pointer"
-                        onclick="selectPartDropdown('{{ $part->part_id }}', '{{ $part->part_name }}', '{{ $part->price }}', '{{ $part->stock }}')"
-                    >
-                        {{ $part->part_name }} (Stock: {{ $part->stock }})
-                    </li>
+                    <!-- AFTER -->
+                        <li 
+                            class="px-3 py-2 text-sm text-gray-200 hover:bg-orange-600 cursor-pointer"
+                            data-id="{{ $part->part_id }}"
+                            data-name="{{ $part->part_name }}"
+                            data-price="{{ $part->price }}"
+                            data-stock="{{ $part->stock }}"
+                            onclick="selectPartDropdown(this)"
+                        >
+                            {{ $part->part_name }} 
+                            <span class="{{ $part->stock == 0 ? 'text-red-400' : 'text-green-400' }} text-xs font-semibold ml-1">
+                                (Stock: {{ $part->stock }})
+                            </span>
+                        </li>
                 @endforeach
 
             </ul>
@@ -614,11 +622,17 @@ function togglePartDropdown() {
     document.getElementById('partDropdown').classList.toggle('hidden');
 }
 
-function selectPartDropdown(id, name, price, stock) {
-    document.getElementById('part_input').value = name;
+// AFTER
+function selectPartDropdown(el) {
+    const id    = el.dataset.id;
+    const name  = el.dataset.name;
+    const price = el.dataset.price;
+    const stock = el.dataset.stock;
+
+    document.getElementById('part_input').value       = name;
     document.getElementById('part_id_selected').value = id;
-    document.getElementById('part_price').value = price;
-    document.getElementById('part_stock').value = stock;
+    document.getElementById('part_price').value       = price;
+    document.getElementById('part_stock').value       = stock;
 
     document.getElementById('partDropdown').classList.add('hidden');
 }

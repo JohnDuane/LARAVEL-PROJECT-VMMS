@@ -3,176 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Reminders</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="bg-[#232323] text-white">
-    <main class="flex-1 p-6 min-h-screen">
+<main class="flex-1 p-6 min-h-screen">
 
-<!-- 📦 Table -->
-<div class="flex gap-6">
+    {{-- ─── TOP ROW: Form + Reminders (equal 1/2 width each) ─── --}}
+    <div class="flex gap-4 mb-6">
 
-  <!-- LEFT SIDE (Job Orders) -->
-  <div class="w-1/2">
+        {{-- LEFT: Create Reminder Form --}}
+        <div class="w-1/2">
+            <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg h-full">
 
-    <!-- 🔍 Search -->
-    <input 
-      type="text" 
-      id="searchJob"
-      placeholder="Search customer or vehicle..."
-      onkeyup="filterJobs()"
-      class="mb-3 w-full bg-[#1f1f1f] border border-gray-700 text-gray-200 
-             rounded-xl px-4 py-2.5 text-sm 
-             focus:outline-none focus:ring-2 focus:ring-orange-500"
-    />
+                <h2 class="text-base font-medium mb-1">Create reminder</h2>
 
-    <!-- 📦 Table -->
-    <div class="overflow-hidden rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
-      <div class="max-h-[180px] overflow-y-auto no-scrollbar">
+                <p class="text-xs text-zinc-500 mb-4 bg-zinc-800 px-3 py-2 rounded-lg" id="selectedJobText">
+                    No job selected
+                </p>
 
-        <table class="w-full text-sm text-left text-gray-300">
+                <form action="/reminders/store" method="POST" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="job_order_id" id="job_order_id">
 
-          <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
-            <tr>
-              <th class="px-4 py-3">ID</th>
-              <th class="px-4 py-3">Customer</th>
-              <th class="px-4 py-3">Vehicle</th>
-              <th class="px-4 py-3 text-center">Action</th>
-            </tr>
-          </thead>
+                    {{-- Description --}}
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-zinc-400">Description</label>
+                        <input type="text" name="description"
+                            placeholder="e.g. Follow up on parts delivery"
+                            class="bg-zinc-800 border border-zinc-700 text-sm text-white px-3 py-2 rounded-lg
+                                   focus:outline-none focus:ring-2 focus:ring-[#ff8800] focus:border-[#ff8800] transition">
+                    </div>
 
-          <tbody id="jobTable" class="h-[230px] divide-y divide-gray-700">
+                    {{-- Due Date --}}
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-zinc-400">Due date</label>
+                        <input type="date" name="due_date"
+                            class="bg-zinc-800 border border-zinc-700 text-sm text-white px-3 py-2 rounded-lg
+                                   focus:outline-none focus:ring-2 focus:ring-[#ff8800] focus:border-[#ff8800] transition">
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98]
+                               text-black text-sm font-medium py-2 rounded-lg transition shadow-md">
+                        Create reminder
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        {{-- RIGHT: All Reminders Table --}}
+        <div class="w-1/2">
+            <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg h-full">
+
+                <h2 class="text-base font-medium mb-3">All reminders</h2>
+
+                <div class="overflow-y-auto max-h-[220px] no-scrollbar">
+                    <table class="w-full text-xs text-zinc-300 table-fixed">
+                        <colgroup>
+                            <col class="w-[13%]">
+                            <col class="w-[30%]">
+                            <col class="w-[20%]">
+                            <col class="w-[22%]">
+                            <col class="w-[15%]">
+                        </colgroup>
+                        <thead class="sticky top-0 bg-zinc-900 text-zinc-500 border-b border-zinc-700">
+                            <tr>
+                                <th class="py-2 px-2 text-left font-medium">Job</th>
+                                <th class="py-2 px-2 text-left font-medium">Description</th>
+                                <th class="py-2 px-2 text-left font-medium">Due date</th>
+                                <th class="py-2 px-2 text-left font-medium">Status</th>
+                                <th class="py-2 px-2 text-center font-medium">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-800">
+                            @foreach($reminders as $r)
+                            @php
+                                $isOverdue = \Carbon\Carbon::now()->gt($r->due_date) && $r->status == 'pending';
+                            @endphp
+                            <tr class="{{ $isOverdue ? 'bg-red-900/20' : '' }}">
+                                <td class="py-2 px-2 truncate">#{{ $r->job_order_id }}</td>
+                                <td class="py-2 px-2 truncate">{{ $r->description }}</td>
+                                <td class="py-2 px-2 truncate">{{ $r->due_date }}</td>
+                                <td class="py-2 px-2">
+                                    @if($r->status == 'completed')
+                                        <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-900/50 text-green-400">
+                                            Completed
+                                        </span>
+                                    @elseif($isOverdue)
+                                        <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-medium bg-red-900/50 text-red-400">
+                                            Overdue
+                                        </span>
+                                    @else
+                                        <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-medium bg-yellow-900/50 text-yellow-400">
+                                            Pending
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="py-2 px-2 text-center">
+                                    @if($r->status != 'completed')
+                                    <a href="/reminders/complete/{{ $r->id }}"
+                                        class="inline-block bg-green-700 hover:bg-green-600 text-white px-2 py-1 rounded text-[11px] transition">
+                                        Done
+                                    </a>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    {{-- ─── BOTTOM: Job Orders Selector ─── --}}
+    <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg">
+
+        <h2 class="text-base font-medium mb-3">Job orders</h2>
+
+        {{-- Search --}}
+        <input
+            type="text"
+            id="searchJob"
+            placeholder="Search customer or vehicle..."
+            oninput="filterJobs()"
+            class="w-full mb-3 bg-zinc-800 border border-zinc-700 text-sm text-zinc-200
+                   px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff8800]
+                   focus:border-[#ff8800] transition"
+        />
+
+        {{-- Column headers --}}
+        <div class="grid grid-cols-[56px_1fr_1fr_auto] gap-2 px-1 pb-2 border-b border-zinc-700 mb-1">
+            <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wide">ID</span>
+            <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wide">Customer</span>
+            <span class="text-[11px] font-medium text-zinc-500 uppercase tracking-wide">Vehicle</span>
+            <span></span>
+        </div>
+
+        {{-- Rows --}}
+        <div id="jobList" class="overflow-y-auto max-h-[160px] no-scrollbar">
             @foreach($jobOrders as $job)
-            <tr class="hover:bg-[#2e2e2e] transition duration-150">
-              <td class="px-4 py-3 text-gray-400">{{ $job->job_order_id }}</td>
-              <td class="px-4 py-3 font-medium text-white customer-name">{{ $job->cust_name }}</td>
-              <td class="px-4 py-3 text-gray-300 vehicle-name">{{ $job->make }}</td>
-              <td class="px-4 py-3 text-center">
-                <button 
-                  onclick="selectJob({{ $job->job_order_id }}, '{{ $job->make }}')"
-                  class="bg-[#ff8800] hover:bg-[#e67600] text-black 
-                         px-3 py-1.5 text-xs font-semibold rounded-lg transition shadow-md">
-                  Select
+            <div class="job-row grid grid-cols-[56px_1fr_1fr_auto] gap-2 items-center px-1 py-2
+                        border-b border-zinc-800 last:border-0 hover:bg-zinc-800/50 transition"
+                 data-customer="{{ strtolower($job->cust_name) }}"
+                 data-vehicle="{{ strtolower($job->make) }}">
+                <span class="text-[11px] text-zinc-500 font-mono">#{{ $job->job_order_id }}</span>
+                <span class="text-sm font-medium text-white truncate customer-name">{{ $job->cust_name }}</span>
+                <span class="text-xs text-zinc-400 truncate vehicle-name">{{ $job->make }}</span>
+                <button
+                    onclick="selectJob({{ $job->job_order_id }}, '{{ $job->make }}')"
+                    class="bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98] text-black
+                           text-[11px] font-semibold px-3 py-1.5 rounded-lg transition shadow-md whitespace-nowrap">
+                    Select
                 </button>
-              </td>
-            </tr>
+            </div>
             @endforeach
-          </tbody>
-
-        </table>
-
-      </div>
-    </div>
-
-  </div>
-
-
-  <!-- RIGHT SIDE (Reminders) -->
-  <div class="w-1/2">
-
-    <div class="bg-[#1f1f1f] p-4 rounded-xl border border-gray-700 h-full">
-
-      <h2 class="text-lg font-semibold mb-3">All Reminders</h2>
-
-      <div class="max-h-[240px] overflow-y-auto no-scrollbar">
-
-        <table class="w-full text-sm text-gray-300">
-          <thead class="text-gray-400 border-b border-gray-700 sticky top-0 bg-[#1f1f1f]">
-            <tr>
-              <th class="py-2">Job</th>
-              <th>Description</th>
-              <th>Due Date</th>
-              <th>Status</th>
-              <th class="text-center">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            @foreach($reminders as $r)
-
-            @php
-              $isOverdue = \Carbon\Carbon::now()->gt($r->due_date) && $r->status == 'pending';
-            @endphp
-
-            <tr class="border-b border-gray-700 {{ $isOverdue ? 'bg-red-900/40' : '' }}">
-              <td class="py-2">#{{ $r->job_order_id }}</td>
-              <td>{{ $r->description }}</td>
-              <td>{{ $r->due_date }}</td>
-
-              <td>
-                @if($r->status == 'completed')
-                  <span class="text-green-400">Completed</span>
-                @elseif($isOverdue)
-                  <span class="text-red-400">Overdue</span>
-                @else
-                  <span class="text-yellow-400">Pending</span>
-                @endif
-              </td>
-
-              <td class="text-center">
-                @if($r->status != 'completed')
-                <a href="/reminders/complete/{{ $r->id }}"
-                  class="bg-green-600 px-2 py-1 rounded text-xs">
-                  Done
-                </a>
-                @endif
-              </td>
-            </tr>
-
-            @endforeach
-          </tbody>
-
-        </table>
-
-      </div>
+        </div>
 
     </div>
 
-  </div>
-
-</div>
-
-
-
-<div class="mt-6 bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl text-white shadow-lg border border-zinc-800 max-w-md">
-
-  <h2 class="text-xl font-semibold mb-2">Create Reminder</h2>
-  <p class="text-sm text-zinc-400 mb-4" id="selectedJobText">No job selected</p>
-
-  <form action="/reminders/store" method="POST" class="space-y-4">
-    @csrf
-
-    <input type="hidden" name="job_order_id" id="job_order_id">
-
-    <!-- Description -->
-    <div>
-      <label class="text-sm text-zinc-300">Description</label>
-      <input type="text" name="description"
-        class="w-full mt-1 bg-zinc-800 border border-zinc-700 p-2.5 rounded-lg 
-               focus:outline-none focus:ring-2 focus:ring-[#ff8800] focus:border-[#ff8800] transition">
-    </div>
-
-    <!-- Due Date -->
-    <div>
-      <label class="text-sm text-zinc-300">Due Date</label>
-      <input type="date" name="due_date"
-        class="w-full mt-1 bg-zinc-800 border border-zinc-700 p-2.5 rounded-lg 
-               focus:outline-none focus:ring-2 focus:ring-[#ff8800] focus:border-[#ff8800] transition">
-    </div>
-
-    <!-- Button -->
-    <button type="submit"
-      class="w-full mt-2 bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98]
-             transition font-medium py-2.5 rounded-lg text-black shadow-md">
-      Create Reminder
-    </button>
-
-  </form>
-</div>
-
-
-    </main>
-
+</main>
 </body>
 </html>
 
@@ -180,32 +174,15 @@
 function selectJob(id, vehicle) {
     document.getElementById('job_order_id').value = id;
     document.getElementById('selectedJobText').innerText =
-        "Selected Job Order: #" + id + " - " + vehicle;
+        'Job #' + id + ' — ' + vehicle;
 }
-
 
 function filterJobs() {
-  let input = document.getElementById("searchJob").value.toLowerCase().trim();
-  let rows = document.querySelectorAll("#jobTable tr");
-
-  rows.forEach(row => {
-    let customer = row.querySelector(".customer-name")?.textContent.toLowerCase() || "";
-    let vehicle = row.querySelector(".vehicle-name")?.textContent.toLowerCase() || "";
-
-    // show all if empty
-    if (input === "") {
-      row.style.display = "";
-      return;
-    }
-
-    if (customer.includes(input) || vehicle.includes(input)) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
-    }
-  });
+    const q = document.getElementById('searchJob').value.toLowerCase().trim();
+    document.querySelectorAll('#jobList .job-row').forEach(row => {
+        if (q === '') { row.style.display = ''; return; }
+        const match = row.dataset.customer.includes(q) || row.dataset.vehicle.includes(q);
+        row.style.display = match ? '' : 'none';
+    });
 }
-
-
 </script>
-

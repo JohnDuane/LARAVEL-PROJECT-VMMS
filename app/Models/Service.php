@@ -15,7 +15,15 @@ class Service extends Model
     'interval_value',
     'interval_unit'
 ];
-
+    public function jobOrders()
+    {
+        return $this->belongsToMany(
+            JobOrder::class,
+            'job_order_services',
+            'service_id',
+            'job_order_id'
+        );
+    }
     
 }
 

@@ -185,7 +185,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="text-right">No parts used</td>
+                    <td colspan="4" class="text-center">No parts used/No parts needed</td>
                 </tr>
                 @endforelse
 

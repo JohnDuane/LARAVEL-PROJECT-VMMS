@@ -29,8 +29,8 @@
       Job Orders Growth (Weekly)
     </h2>
 
-    <!-- ✅ GRAPH INSIDE CARD -->
-      <div class-"h-56">
+
+    <div class-"h-56">
         <canvas id="jobOrdersChart"></canvas>
       </div>
   </div>
@@ -91,23 +91,19 @@
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
 
     <button onclick="window.location.href='/joborderform'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
-      <span class="text-2xl">➕</span>
-      <span class="text-sm mt-2">Add Job Order</span>
+      <span class="text-sm m-5">Add Job Order</span>
     </button>
 
     <button onclick="window.location.href='/addsupplier'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
-      <span class="text-2xl">🖨️</span>
-      <span class="text-sm mt-2">Add Supplier</span>
+      <span class="text-sm m-5">Add Supplier</span>
     </button>
 
     <button onclick="window.location.href='/addmechanic'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
-      <span class="text-2xl">✏️</span>
-      <span class="text-sm mt-2">Add Mechanic</span>
+      <span class="text-sm m-5">Add Mechanic</span>
     </button>
 
     <button onclick="window.location.href='/addservices'" class="bg-zinc-900 text-white rounded-xl p-6 flex flex-col items-center justify-center shadow-md hover:bg-zinc-800 transition">
-      <span class="text-2xl">🗑️</span>
-      <span class="text-sm mt-2">Add Services</span>
+      <span class="text-sm m-5">Add Services</span>
     </button>
 
   </div>

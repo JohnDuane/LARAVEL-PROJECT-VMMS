@@ -20,4 +20,14 @@ class JobOrder extends Model
     'total_cost',
     'status'
 ];
+
+    public function services()
+    {
+        return $this->belongsToMany(
+            Service::class,
+            'job_order_services',   // ✅ pivot table
+            'job_order_id',         // FK in pivot
+            'service_id'            // FK in pivot
+        );
+    }
 }

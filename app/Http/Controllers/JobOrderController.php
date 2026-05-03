@@ -7,6 +7,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Models\Customer;
 use App\Models\Vehicle;
+use Carbon\Carbon;
+use App\Models\Reminder;
 use App\Models\Service;
 
 use App\Models\Staff;
@@ -71,10 +73,7 @@ public function store(Request $request)
     // SAVE SERVICES
 if ($request->services) {
     foreach ($request->services as $serviceId) {
-        \DB::table('job_order_services')->insert([
-            'job_order_id' => $job->job_order_id,
-            'service_id' => $serviceId,
-        ]);
+        $job->services()->attach($serviceId);
     }
 }
 
@@ -110,9 +109,31 @@ if ($request->parts) {
     }
 }
 
+// 🔥 AUTO CREATE REMINDERS
+foreach ($job->services as $service) {
+
+    if ($service->interval_value && $service->interval_unit) {
+
+        $dueDate = \Carbon\Carbon::now()->add(
+            $service->interval_unit,
+            $service->interval_value
+        );
+
+        \App\Models\Reminder::create([
+            'job_order_id' => $job->job_order_id,
+            'service_id'   => $service->service_id,
+            'description'  => $service->job_desc . ' maintenance',
+            'due_date'     => $dueDate,
+            'status'       => 'pending',
+            'type'         => 'auto',
+        ]);
+    }
+}
+
     return redirect()->back()
     ->with('success', 'Job order has been added!')
     ->with('job_order_id', $job->job_order_id);
+    
 }
 
 public function servicesHistory()
@@ -169,5 +190,40 @@ return Pdf::loadView('pdf.job-order', [
 
     return $pdf->stream('job-order.pdf');
 }
+
+public function completeJob($id)
+{
+    $job = JobOrder::findOrFail($id);
+    $job->status = 'completed';
+    $job->save();
+
+    // 🔥 DEBUG: check if services exist
+    if ($job->services->isEmpty()) {
+        dd('NO SERVICES FOUND FOR THIS JOB'); // REMOVE AFTER TEST
+    }
+
+    foreach ($job->services as $service) {
+
+        if ($service->interval_value && $service->interval_unit) {
+
+            $dueDate = Carbon::now()->add(
+                $service->interval_unit,
+                $service->interval_value
+            );
+
+            Reminder::create([
+                'job_order_id' => $job->job_order_id,
+                'service_id'   => $service->service_id, // ✅ FIXED
+                'description'  => $service->job_desc . ' maintenance', // ✅ FIXED
+                'due_date'     => $dueDate,
+                'status'       => 'pending',
+                'type'         => 'auto',
+            ]);
+        }
+    }
+
+    return back()->with('success', 'Job completed + reminders generated!');
+}
+
 
 }

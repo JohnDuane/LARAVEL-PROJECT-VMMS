@@ -9,52 +9,28 @@
 <body class="bg-[#232323] text-white">
 <main class="flex-1 p-6 min-h-screen">
 
+<div id="serviceViewer" class="bg-zinc-900/80 mt-4 p-4 rounded-xl border border-zinc-800 hidden">
+    <h3 class="text-sm font-medium mb-2">Services for selected job</h3>
+
+    <table class="w-full text-xs text-zinc-300">
+        <thead class="text-zinc-500 border-b border-zinc-700">
+            <tr>
+                <th class="text-left py-1">Service</th>
+                <th>Price</th>
+                <th>Interval</th>
+            </tr>
+        </thead>
+        <tbody id="serviceViewerBody"></tbody>
+    </table>
+</div>
+
     {{-- ─── TOP ROW: Form + Reminders (equal 1/2 width each) ─── --}}
     <div class="flex gap-4 mb-6">
 
         {{-- LEFT: Create Reminder Form --}}
-        <div class="w-1/2">
-            <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg h-full">
-
-                <h2 class="text-base font-medium mb-1">Create reminder</h2>
-
-                <p class="text-xs text-zinc-500 mb-4 bg-zinc-800 px-3 py-2 rounded-lg" id="selectedJobText">
-                    No job selected
-                </p>
-
-                <form action="/reminders/store" method="POST" class="space-y-4">
-                    @csrf
-                    <input type="hidden" name="job_order_id" id="job_order_id">
-
-                    {{-- Description --}}
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs text-zinc-400">Description</label>
-                        <input type="text" name="description"
-                            placeholder="e.g. Follow up on parts delivery"
-                            class="bg-zinc-800 border border-zinc-700 text-sm text-white px-3 py-2 rounded-lg
-                                   focus:outline-none focus:ring-2 focus:ring-[#ff8800] focus:border-[#ff8800] transition">
-                    </div>
-
-                    {{-- Due Date --}}
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs text-zinc-400">Due date</label>
-                        <input type="date" name="due_date"
-                            class="bg-zinc-800 border border-zinc-700 text-sm text-white px-3 py-2 rounded-lg
-                                   focus:outline-none focus:ring-2 focus:ring-[#ff8800] focus:border-[#ff8800] transition">
-                    </div>
-
-                    <button type="submit"
-                        class="w-full bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98]
-                               text-black text-sm font-medium py-2 rounded-lg transition shadow-md">
-                        Create reminder
-                    </button>
-                </form>
-
-            </div>
-        </div>
 
         {{-- RIGHT: All Reminders Table --}}
-        <div class="w-1/2">
+        <div class="w-full h-[250px]">
             <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg h-full">
 
                 <h2 class="text-base font-medium mb-3">All reminders</h2>
@@ -84,7 +60,12 @@
                             @endphp
                             <tr class="{{ $isOverdue ? 'bg-red-900/20' : '' }}">
                                 <td class="py-2 px-2 truncate">#{{ $r->job_order_id }}</td>
-                                <td class="py-2 px-2 truncate">{{ $r->description }}</td>
+                                <td class="py-2 px-2 truncate">
+                                    {{ $r->description }}
+                                    @if($r->type == 'auto')
+                                        <span class="text-[10px] text-blue-400">(Auto)</span>
+                                    @endif
+                                </td>
                                 <td class="py-2 px-2 truncate">{{ $r->due_date }}</td>
                                 <td class="py-2 px-2">
                                     @if($r->status == 'completed')
@@ -155,7 +136,7 @@
                 <span class="text-sm font-medium text-white truncate customer-name">{{ $job->cust_name }}</span>
                 <span class="text-xs text-zinc-400 truncate vehicle-name">{{ $job->make }}</span>
                 <button
-                    onclick="selectJob({{ $job->job_order_id }}, '{{ $job->make }}')"
+                    onclick="viewServices({{ $job->job_order_id }})"
                     class="bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98] text-black
                            text-[11px] font-semibold px-3 py-1.5 rounded-lg transition shadow-md whitespace-nowrap">
                     Select

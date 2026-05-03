@@ -8,9 +8,11 @@ class Reminder extends Model
 {
     protected $fillable = [
         'job_order_id',
+        'service_id',
         'description',
         'due_date',
-        'status'
+        'status',
+        'type'
     ];
 
     public function jobOrder()

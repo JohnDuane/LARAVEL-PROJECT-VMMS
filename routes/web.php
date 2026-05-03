@@ -58,7 +58,6 @@ Route::get('/addmechanic', function () {
     return view('addmechanic');
 })->name('addemchanic');
 
-Route::post('/reminders/store', [DashboardController::class, 'storeReminder'])->name('reminders.store');
 
 Route::get('/stockin', [PartsController::class, 'index'])
     ->name('stockin');

@@ -8,13 +8,15 @@
                 <a href="{{ route('userdash') }} " class="mt-25 block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700 hover:text-white bg-olive-50/0">
                     Home
                 </a>
-                <a href="{{ route('usermygarage') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700">
-                    My Garage
-                </a>
 
                 <a href="{{ route('addcustomer') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700">
                     Add Customer
                 </a>
+
+                <a href="{{ route('usermygarage') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700">
+                    My Garage
+                </a>
+
                 
                 <a href="{{ route('serviceshistory') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700">
                     Records

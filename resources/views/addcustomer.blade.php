@@ -56,6 +56,7 @@
           <tr 
             class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
             onclick="selectCustomer(
+              this,
               {{ $c->id }},
               {{ json_encode($c->cust_name) }},
               {{ json_encode($c->contact_number) }},
@@ -92,7 +93,14 @@
 
     <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-md">
 
-    <h2 class="text-white text-lg font-medium mb-6">Add / Edit Customer</h2>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-white text-lg font-medium">Add / Edit Customer</h2>
+
+        <button type="button" onclick="clearCustomerForm()"
+            class="text-sm text-gray-400 hover:text-white">
+            Clear
+        </button>
+    </div>
 
     <!-- Name -->
     <div class="mb-4">
@@ -116,28 +124,31 @@
     </div>
 
     <!-- BUTTONS -->
-    <div class="flex justify-end gap-3">
+    <div class="flex justify-between mt-6">
 
-        <!-- SAVE -->
-        <button type="submit"
-            formaction="{{ route('customer.store') }}"
-            class="bg-[#ff8800] text-white rounded-lg px-6 py-2 text-sm">
-            Add
-        </button>
+      <!-- PRIMARY -->
+      <button type="submit"
+          formaction="{{ route('customer.store') }}"
+          class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-sm font-medium">
+          + Add Customer
+      </button>
 
-        <!-- UPDATE -->
-        <button type="submit" formaction="{{ route('customer.update') }}"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Update
-        </button>
+      <!-- SECONDARY -->
+      <div class="flex gap-2">
+          <button id="updateBtn" type="submit" 
+              formaction="{{ route('customer.update') }}"
+              class="bg-gray-700 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+              Update
+          </button>
 
-        <!-- DELETE -->
-        <button type="submit" formaction="{{ route('customer.delete') }}"
-            onclick="return confirm('Are you sure you want to delete this customer?')"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Delete
-        </button>
-    </div>
+          <button id="deleteBtn" type="submit" 
+              formaction="{{ route('customer.delete') }}"
+              onclick="return confirm('Delete this customer?')"
+              class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+              Delete
+          </button>
+      </div>
+</div>
 
     </div>
     </form>
@@ -147,11 +158,59 @@
 
 <!-- SCRIPT -->
 <script>
-function selectCustomer(id, name, contact, address) {
+let selectedCustomerId = null;
+let selectedCustomerRow = null;
+
+function selectCustomer(row, id, name, contact, address) {
+    // Remove old highlight
+    if (selectedCustomerRow) {
+        selectedCustomerRow.classList.remove("bg-orange-500/20");
+    }
+
+    // Highlight new
+    selectedCustomerRow = row;
+    row.classList.add("bg-orange-500/20");
+
+    selectedCustomerId = id;
+
+    // Fill form
     document.getElementById('id').value = id;
     document.getElementById('cust_name').value = name;
     document.getElementById('contact_number').value = contact;
     document.getElementById('address').value = address;
+
+    toggleCustomerButtons();
+}
+
+
+function toggleCustomerButtons() {
+    let disabled = !selectedCustomerId;
+
+    let updateBtn = document.getElementById("updateBtn");
+    let deleteBtn = document.getElementById("deleteBtn");
+
+    updateBtn.disabled = disabled;
+    deleteBtn.disabled = disabled;
+
+    updateBtn.classList.toggle("opacity-50", disabled);
+    updateBtn.classList.toggle("cursor-not-allowed", disabled);
+
+    deleteBtn.classList.toggle("opacity-50", disabled);
+    deleteBtn.classList.toggle("cursor-not-allowed", disabled);
+}
+
+
+function clearCustomerForm() {
+    selectedCustomerId = null;
+
+    document.getElementById("customerForm").reset();
+
+    if (selectedCustomerRow) {
+        selectedCustomerRow.classList.remove("bg-orange-500/20");
+        selectedCustomerRow = null;
+    }
+
+    toggleCustomerButtons();
 }
 
 
@@ -248,6 +307,10 @@ function submitVehicle() {
         location.reload();
     });
 }
+
+window.onload = function() {
+    toggleCustomerButtons();
+};
 </script>
 
 <!-- 🚗 VEHICLE MODAL -->

@@ -42,13 +42,14 @@
         @foreach($services as $s)
         <tr 
           class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
-          onclick="selectRow(
+          onclick='selectRow(
+            this,
             {{ $s->service_id }},
-            '{{ $s->job_desc }}',
-            '{{ $s->price }}',
-            '{{ $s->interval_value }}',
-            '{{ $s->interval_unit }}'
-          )"
+            @json($s->job_desc),
+            {{ $s->price }},
+            {{ $s->interval_value ?? 'null' }},
+            @json($s->interval_unit)
+          )'
         >
           <td class="px-4 py-3 text-gray-400">{{ $s->service_id }}</td>
 
@@ -79,11 +80,19 @@
 <form id="serviceForm" method="POST">
 @csrf
 
-<input type="hidden" id="service_id">
+<input type="hidden" id="service_id" name="service_id">
 
 <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-md">
 
-<h2 class="text-white text-lg font-medium mb-6">Service Form</h2>
+<div class="flex justify-between items-center mb-4">
+    <h2 class="text-white text-lg font-medium">Add / Edit Service</h2>
+
+    <button type="button" onclick="clearForm()"
+        class="text-sm text-gray-400 hover:text-white">
+        Clear
+    </button>
+</div>
+
 
 <div class="mb-4">
 <label class="block text-sm text-gray-400 mb-1">Job Description</label>
@@ -117,23 +126,26 @@ class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py
 
 
 <!-- Buttons -->
-<div class="flex justify-end gap-3 mt-5">
+<div class="flex justify-between mt-6">
 
-<button type="button" onclick="addService()"
-class="bg-[#ff8800] px-6 py-2 rounded-lg text-sm">
-Add
-</button>
+    <!-- PRIMARY -->
+    <button type="button" onclick="addService()"
+        class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-sm font-medium">
+        + Add Service
+    </button>
 
-<button type="button" onclick="updateService()"
-class="bg-[#ff8800] px-6 py-2 rounded-lg text-sm">
-Update
-</button>
+    <!-- SECONDARY -->
+    <div class="flex gap-2">
+        <button id="updateBtn" type="button" onclick="updateService()"
+            class="bg-gray-700 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+            Update
+        </button>
 
-<button type="button" onclick="deleteService()"
-class="bg-[#ff8800] px-6 py-2 rounded-lg text-sm">
-Delete
-</button>
-
+        <button id="deleteBtn" type="button" onclick="deleteService()"
+            class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+            Delete
+        </button>
+    </div>
 </div>
 
 </div>
@@ -144,39 +156,88 @@ Delete
 </main>
 
 <script>
-let selectedId = null;
+    let selectedId = null;
+    let selectedRow = null;
 
-function selectRow(id, desc, price, interval_value, interval_unit) {
-    selectedId = id;
+    function selectRow(row, id, desc, price, interval_value, interval_unit) {
+        // Remove old highlight
+        if (selectedRow) {
+            selectedRow.classList.remove("bg-orange-500/20");
+        }
 
-    document.getElementById("service_id").value = id;
-    document.getElementById("desc").value = desc;
-    document.getElementById("price").value = price;
-    document.getElementById("interval_value").value = interval_value;
-    document.getElementById("interval_unit").value = interval_unit;
-}
+        // Highlight new
+        selectedRow = row;
+        row.classList.add("bg-orange-500/20");
 
-function addService() {
-    let form = document.getElementById("serviceForm");
-    form.action = "/services/store";
-    form.submit();
-}
+        selectedId = id;
 
-function updateService() {
-    if (!selectedId) return alert("Select a row first");
+        // Fill form
+        document.getElementById("service_id").value = id;
+        document.getElementById("desc").value = desc;
+        document.getElementById("price").value = price;
+        document.getElementById("interval_value").value = interval_value ?? "";
+        document.getElementById("interval_unit").value = interval_unit ?? "";
 
-    let form = document.getElementById("serviceForm");
-    form.action = "/services/update/" + selectedId;
-    form.submit();
-}
+        toggleButtons();
+    }
 
-function deleteService() {
-    if (!selectedId) return alert("Select a row first");
+    function toggleButtons() {
+        let disabled = !selectedId;
 
-    let form = document.getElementById("serviceForm");
-    form.action = "/services/delete/" + selectedId;
-    form.submit();
-}
+        let updateBtn = document.getElementById("updateBtn");
+        let deleteBtn = document.getElementById("deleteBtn");
+
+        updateBtn.disabled = disabled;
+        deleteBtn.disabled = disabled;
+
+        updateBtn.classList.toggle("opacity-50", disabled);
+        updateBtn.classList.toggle("cursor-not-allowed", disabled);
+
+        deleteBtn.classList.toggle("opacity-50", disabled);
+        deleteBtn.classList.toggle("cursor-not-allowed", disabled);
+    }
+
+    function clearForm() {
+        selectedId = null;
+
+        document.getElementById("serviceForm").reset();
+
+        if (selectedRow) {
+            selectedRow.classList.remove("bg-orange-500/20");
+            selectedRow = null;
+        }
+
+        toggleButtons();
+    }
+
+    function addService() {
+        let form = document.getElementById("serviceForm");
+        form.action = "/services/store";
+        form.submit();
+
+        clearForm();
+    }
+
+    function updateService() {
+        if (!selectedId) return;
+
+        let form = document.getElementById("serviceForm");
+        form.action = "/services/update/" + selectedId;
+        form.submit();
+    }
+
+    function deleteService() {
+        if (!selectedId) return;
+
+        if (!confirm("Delete this service?")) return;
+
+        let form = document.getElementById("serviceForm");
+        form.action = "/services/delete/" + selectedId;
+        form.submit();
+    }
+
+    // Init
+    window.onload = toggleButtons;
 </script>
 
 </body>

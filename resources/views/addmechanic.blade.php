@@ -52,12 +52,13 @@
           @foreach($staff as $s)
           <tr 
             class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
-            onclick="selectStaff(
+            onclick='selectStaff(
+              this,
               {{ $s->staff_id }},
-              '{{ $s->staff_name }}',
-              '{{ $s->role }}',
-              '{{ $s->contact_number }}'
-            )"
+              @json($s->staff_name),
+              @json($s->role),
+              @json($s->contact_number)
+            )'
           >
             <td class="px-4 py-3 text-gray-400">{{ $s->staff_id }}</td>
 
@@ -92,7 +93,14 @@
 
     <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-md">
 
-    <h2 class="text-white text-lg font-medium mb-6">Add Staff</h2>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-white text-lg font-medium">Add / Edit Staff</h2>
+
+        <button type="button" onclick="clearStaffForm()"
+            class="text-sm text-gray-400 hover:text-white">
+            Clear
+        </button>
+    </div>
 
     <!-- Name -->
     <div class="mb-4">
@@ -116,25 +124,27 @@
     </div>
 
     <!-- Buttons -->
-    <div class="flex justify-end gap-3">
+    <div class="flex justify-between mt-6">
 
-        <!-- SAVE -->
+        <!-- PRIMARY -->
         <button type="submit"
-            class="bg-[#ff8800] hover:bg-orange-500 text-white rounded-lg px-6 py-2 text-sm">
-            Save
+            class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-sm font-medium">
+            + Save
         </button>
 
-        <!-- UPDATE -->
-        <button type="submit" formaction="{{ route('staff.update') }}"
-            class="bg-[#ff8800] hover:bg-blue-500 text-white rounded-lg px-6 py-2 text-sm">
-            Update
-        </button>
+        <!-- SECONDARY -->
+        <div class="flex gap-2">
+            <button id="updateBtn" type="submit" formaction="{{ route('staff.update') }}"
+                class="bg-gray-700 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+                Update
+            </button>
 
-        <!-- DELETE -->
-        <button type="submit" formaction="{{ route('staff.delete') }}"
-            class="bg-[#ff8800] hover:bg-red-500 text-white rounded-lg px-6 py-2 text-sm">
-            Delete
-        </button>
+            <button id="deleteBtn" type="submit" formaction="{{ route('staff.delete') }}"
+                onclick="return confirm('Delete this staff?')"
+                class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+                Delete
+            </button>
+        </div>
     </div>
 
     </div>
@@ -144,28 +154,73 @@
 </main>
 
 <script>
-function selectStaff(id, name, role, contact) {
+let selectedStaffId = null;
+let selectedRow = null;
+
+function selectStaff(row, id, name, role, contact) {
+    // Remove old highlight
+    if (selectedRow) {
+        selectedRow.classList.remove("bg-orange-500/20");
+    }
+
+    // Highlight new row
+    selectedRow = row;
+    row.classList.add("bg-orange-500/20");
+
+    selectedStaffId = id;
+
+    // Fill form
     document.getElementById('staff_id').value = id;
     document.getElementById('staff_name').value = name;
     document.getElementById('role').value = role;
     document.getElementById('contact_number').value = contact;
+
+    toggleButtons();
+}
+
+function toggleButtons() {
+    let disabled = !selectedStaffId;
+
+    let updateBtn = document.getElementById("updateBtn");
+    let deleteBtn = document.getElementById("deleteBtn");
+
+    updateBtn.disabled = disabled;
+    deleteBtn.disabled = disabled;
+
+    updateBtn.classList.toggle("opacity-50", disabled);
+    updateBtn.classList.toggle("cursor-not-allowed", disabled);
+
+    deleteBtn.classList.toggle("opacity-50", disabled);
+    deleteBtn.classList.toggle("cursor-not-allowed", disabled);
+}
+
+function clearStaffForm() {
+    selectedStaffId = null;
+
+    document.querySelector("form").reset();
+
+    if (selectedRow) {
+        selectedRow.classList.remove("bg-orange-500/20");
+        selectedRow = null;
+    }
+
+    toggleButtons();
 }
 
 function filterStaff() {
-  let input = document.getElementById("searchStaff").value.toLowerCase();
-  let rows = document.querySelectorAll("#staffTable tr");
+    let input = document.getElementById("searchStaff").value.toLowerCase();
+    let rows = document.querySelectorAll("#staffTable tr");
 
-  rows.forEach(row => {
-    let name = row.querySelector(".staff-name").textContent.toLowerCase();
-    let contact = row.querySelector(".staff-contact").textContent.toLowerCase();
+    rows.forEach(row => {
+        let name = row.querySelector(".staff-name").textContent.toLowerCase();
+        let contact = row.querySelector(".staff-contact").textContent.toLowerCase();
 
-    if (name.includes(input) || contact.includes(input)) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
-    }
-  });
+        row.style.display = (name.includes(input) || contact.includes(input)) ? "" : "none";
+    });
 }
+
+// Init
+window.onload = toggleButtons;
 </script>
     
 </body>

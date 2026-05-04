@@ -21,15 +21,17 @@
   
 
   <!-- SEARCH TAGIL -->
-  <input 
-    type="text"
-    id="searchVehicle"
-    placeholder="Search by plate or make..."
-    onkeyup="filterVehicles()"
-    class="w-full mb-3 bg-[#1f1f1f] border border-gray-700 text-gray-200 
-           rounded-xl px-4 py-2.5 text-sm 
-           focus:outline-none focus:ring-2 focus:ring-orange-500"
-  />
+  <div class="relative mb-3">
+    <input 
+      type="text"
+      id="searchVehicle"
+      placeholder="Search by plate or make..."
+      onkeyup="filterVehicles()"
+      class="w-full bg-[#1f1f1f] border border-gray-700 text-gray-200 
+            rounded-xl px-10 py-2.5 text-sm 
+            focus:outline-none focus:ring-2 focus:ring-orange-500"
+    />
+  </div>
 
   <!-- TABLE NIYA HASHHSHASHAHS -->
   <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-[420px] overflow-y-auto no-scrollbar rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
@@ -51,7 +53,7 @@
         @foreach($vehicles as $v)
         <tr 
           class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
-          onclick="selectRow({{ $v->vehicle_id }}, '{{ $v->plate_number }}', '{{ $v->make }}', '{{ $v->engine_model }}', {{ $v->customer_id }})"
+          onclick="selectRow(this, {{ $v->vehicle_id }}, '{{ $v->plate_number }}', '{{ $v->make }}', '{{ $v->engine_model }}', {{ $v->customer_id }})"
         >
           <td class="px-4 py-3 text-gray-400">{{ $v->vehicle_id }}</td>
           <td class="px-4 py-3 text-white font-medium">{{ $v->plate_number }}</td>
@@ -74,7 +76,14 @@
 
   <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-md">
 
-    <h2 class="text-white text-lg font-medium mb-6">Add/Edit Vehicle</h2>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-white text-lg font-medium">Add / Edit Vehicles</h2>
+
+        <button type="button" onclick="clearForm()"
+            class="text-sm text-gray-400 hover:text-white">
+            Clear
+        </button>
+    </div>
 
 
     <div class="mb-4">
@@ -108,23 +117,27 @@
     </select>
 
     <!-- Buttons -->
-    <div class="flex justify-end gap-3 px-3 mt-5">
+            <div class="flex justify-between mt-6">
 
-        <button type="button" onclick="addVehicle()"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Add
-        </button>
+                <!-- PRIMARY -->
+                <button type="button" onclick="addVehicle()"
+                    class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-sm font-medium">
+                    + Add Vehicle
+                </button>
 
-	<button type="button" onclick="updateVehicle()"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Update
-        </button>
+                <!-- SECONDARY -->
+                <div class="flex gap-2">
+                    <button id="updateBtn" type="button" onclick="updateVehicle()"
+                        class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+                        Update
+                    </button>
 
-	<button type="button" onclick="deleteVehicle()"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Delete
-        </button>
-    </div>
+                    <button id="deleteBtn" type="button" onclick="deleteVehicle()"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+                        Delete
+                    </button>
+                </div>
+            </div>
 
             </div>
         </form>
@@ -134,58 +147,100 @@
 </main>
 
 <script>
-let selectedId = null;
+    let selectedId = null;
+    let selectedRow = null;
 
-function selectRow(id, plate, make, engine, customerId) {
-    selectedId = id;
+    function selectRow(row, id, plate, make, engine, customerId) {
+        // Remove old highlight
+        if (selectedRow) {
+            selectedRow.classList.remove("bg-orange-500/20");
+        }
 
-    document.getElementById("vehicle_id").value = id;
-    document.getElementById("plate").value = plate;
-    document.getElementById("make").value = make;
-    document.getElementById("engine").value = engine;
+        // Add new highlight
+        selectedRow = row;
+        row.classList.add("bg-orange-500/20");
 
-    document.getElementById("customer").value = customerId;
-}
+        selectedId = id;
 
-function addVehicle() {
-    let form = document.getElementById("vehicleForm");
-    form.action = "/vehicles/store";
-    form.submit();
+        // Fill form
+        document.getElementById("vehicle_id").value = id;
+        document.getElementById("plate").value = plate;
+        document.getElementById("make").value = make;
+        document.getElementById("engine").value = engine;
+        document.getElementById("customer").value = customerId;
 
-    selectedId = null;
-}
-
-function updateVehicle() {
-    if (!selectedId) return alert("Select a row first");
-
-    let form = document.getElementById("vehicleForm");
-    form.action = "/vehicles/update/" + selectedId;
-    form.submit();
-}
-
-function deleteVehicle() {
-    if (!selectedId) return alert("Select a row first");
-
-    let form = document.getElementById("vehicleForm");
-    form.action = "/vehicles/delete/" + selectedId;
-    form.submit();
-}
-
-function filterVehicles() {
-  let input = document.getElementById("searchVehicle").value.toLowerCase();
-  let rows = document.querySelectorAll("#vehicleTable tr");
-
-  rows.forEach(row => {
-    let plate = row.children[1].textContent.toLowerCase();
-    let make = row.children[2].textContent.toLowerCase();
-
-    if (plate.includes(input) || make.includes(input)) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
+        toggleButtons();
     }
-  });
-}
+
+    function toggleButtons() {
+        let disabled = !selectedId;
+
+        let updateBtn = document.getElementById("updateBtn");
+        let deleteBtn = document.getElementById("deleteBtn");
+
+        updateBtn.disabled = disabled;
+        deleteBtn.disabled = disabled;
+
+        updateBtn.classList.toggle("opacity-50", disabled);
+        updateBtn.classList.toggle("cursor-not-allowed", disabled);
+
+        deleteBtn.classList.toggle("opacity-50", disabled);
+        deleteBtn.classList.toggle("cursor-not-allowed", disabled);
+    }
+
+    function clearForm() {
+        selectedId = null;
+
+        document.getElementById("vehicleForm").reset();
+
+        if (selectedRow) {
+            selectedRow.classList.remove("bg-orange-500/20");
+            selectedRow = null;
+        }
+
+        toggleButtons();
+    }
+
+    function addVehicle() {
+        let form = document.getElementById("vehicleForm");
+        form.action = "/vehicles/store";
+        form.submit();
+
+        clearForm();
+    }
+
+    function updateVehicle() {
+        if (!selectedId) return;
+
+        let form = document.getElementById("vehicleForm");
+        form.action = "/vehicles/update/" + selectedId;
+        form.submit();
+    }
+
+    function deleteVehicle() {
+        if (!selectedId) return;
+
+        if (!confirm("Are you sure you want to delete this vehicle?")) return;
+
+        let form = document.getElementById("vehicleForm");
+        form.action = "/vehicles/delete/" + selectedId;
+        form.submit();
+    }
+
+    function filterVehicles() {
+        let input = document.getElementById("searchVehicle").value.toLowerCase();
+        let rows = document.querySelectorAll("#vehicleTable tr");
+
+        rows.forEach(row => {
+            let plate = row.children[1].textContent.toLowerCase();
+            let make = row.children[2].textContent.toLowerCase();
+
+            row.style.display = (plate.includes(input) || make.includes(input)) ? "" : "none";
+        });
+    }
+
+    // Initialize buttons as disabled
+    window.onload = toggleButtons;
 </script>
 
 

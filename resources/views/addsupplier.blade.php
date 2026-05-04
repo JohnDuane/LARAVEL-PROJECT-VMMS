@@ -38,7 +38,7 @@
     <table class="w-full text-sm text-left text-gray-300">
 
       <!-- Header -->
-        <thead>
+        <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
         <tr>
             <th class="px-4 py-3">ID</th>
             <th class="px-4 py-3">Name</th>
@@ -48,14 +48,24 @@
         </thead>
 
         <tbody id="supplierTable">
-        @foreach($suppliers as $s)
-        <tr onclick="selectRow({{ $s->supplier_id }}, '{{ $s->supplier_name }}', '{{ $s->contact_number }}', '{{ $s->address }}')">
-        <td class="px-4 py-3">{{ $s->supplier_id }}</td>
-        <td class="px-4 py-3">{{ $s->supplier_name }}</td>
-        <td class="px-4 py-3">{{ $s->contact_number }}</td>
-        <td class="px-4 py-3">{{ $s->address }}</td>
-        </tr>
-        @endforeach
+            @foreach($suppliers as $s)
+                <tr 
+                class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
+                onclick='selectRow(
+                    this,
+                    {{ $s->supplier_id }},
+                    @json($s->supplier_name),
+                    @json($s->contact_number),
+                    @json($s->address)
+                )'
+                >
+
+                    <td class="px-4 py-3">{{ $s->supplier_id }}</td>
+                    <td class="px-4 py-3">{{ $s->supplier_name }}</td>
+                    <td class="px-4 py-3">{{ $s->contact_number }}</td>
+                    <td class="px-4 py-3">{{ $s->address }}</td>
+                </tr>
+            @endforeach
         </tbody>
 
     </table>
@@ -67,50 +77,61 @@
   <form id="supplierForm" method="POST">
   @csrf
 
-  <input type="hidden" id="supplier_id">
+    <input type="hidden" id="supplier_id" name="supplier_id">
 
   <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-md">
 
-    <h2 class="text-white text-lg font-medium mb-6">Add/Edit Suppliers</h2>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-white text-lg font-medium">Add / Edit Supplier</h2>
+
+        <button type="button" onclick="clearForm()"
+            class="text-sm text-gray-400 hover:text-white">
+            Clear
+        </button>
+    </div>
 
 
     <div class="mb-4">
-    <label>Supplier Name</label>
+    <label class="block text-sm text-gray-400 mb-1">Supplier Name</label>
     <input type="text" id="name" name="supplier_name" required
     class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500"/>
     </div>
 
     <div class="mb-4">
-    <label>Contact Number</label>
+    <label class="block text-sm text-gray-400 mb-1">Contact Number</label>
     <input type="text" id="contact" name="contact_number"
     class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500"/>
     </div>
 
     <div class="mb-4">
-    <label>Address</label>
+    <label class="block text-sm text-gray-400 mb-1">Address</label>
     <input type="text" id="address" name="address"
     class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500"/>
     </div>
 
 
     <!-- Buttons -->
-    <div class="flex justify-end gap-3 px-3 mt-5">
+        <div class="flex justify-between mt-6">
 
-        <button type="button" onclick="addSupplier()"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Add
-        </button>
+            <!-- PRIMARY -->
+            <button type="button" onclick="addSupplier()"
+                class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-sm font-medium">
+                + Add Supplier
+            </button>
 
-	<button type="button" onclick="updateSupplier()"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Update
-        </button>
+            <!-- SECONDARY -->
+            <div class="flex gap-2">
+                <button id="updateBtn" type="button" onclick="updateSupplier()"
+                    class="bg-gray-700 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+                    Update
+                </button>
 
-	<button type="button" onclick="deleteSupplier()"
-            class="bg-[#ff8800] hover:bg-[#232323] text-white rounded-lg px-6 py-2 text-sm">
-            Delete
-        </button>
-    </div>
+                <button id="deleteBtn" type="button" onclick="deleteSupplier()"
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm opacity-50 cursor-not-allowed">
+                    Delete
+                </button>
+            </div>
+        </div>
 
             </div>
         </form>
@@ -123,25 +144,69 @@
 </html>
 
 <script>
-    let selectedId = null;
+   let selectedId = null;
+let selectedRow = null;
 
-function selectRow(id, name, contact, address) {
+function selectRow(row, id, name, contact, address) {
+    // Remove old highlight
+    if (selectedRow) {
+        selectedRow.classList.remove("bg-orange-500/20");
+    }
+
+    // Highlight new row
+    selectedRow = row;
+    row.classList.add("bg-orange-500/20");
+
     selectedId = id;
 
+    // Fill form
     document.getElementById("supplier_id").value = id;
     document.getElementById("name").value = name;
     document.getElementById("contact").value = contact;
     document.getElementById("address").value = address;
+
+    toggleButtons();
+}
+
+function toggleButtons() {
+    let disabled = !selectedId;
+
+    let updateBtn = document.getElementById("updateBtn");
+    let deleteBtn = document.getElementById("deleteBtn");
+
+    updateBtn.disabled = disabled;
+    deleteBtn.disabled = disabled;
+
+    updateBtn.classList.toggle("opacity-50", disabled);
+    updateBtn.classList.toggle("cursor-not-allowed", disabled);
+
+    deleteBtn.classList.toggle("opacity-50", disabled);
+    deleteBtn.classList.toggle("cursor-not-allowed", disabled);
+}
+
+function clearForm() {
+    selectedId = null;
+
+    document.getElementById("supplierForm").reset();
+
+    if (selectedRow) {
+        selectedRow.classList.remove("bg-orange-500/20");
+        selectedRow = null;
+    }
+
+    toggleButtons();
 }
 
 function addSupplier() {
     let form = document.getElementById("supplierForm");
     form.action = "/suppliers/store";
     form.submit();
+
+    clearForm();
 }
 
 function updateSupplier() {
-    if (!selectedId) return alert("Select a row first");
+    if (!selectedId) return;
 
     let form = document.getElementById("supplierForm");
     form.action = "/suppliers/update/" + selectedId;
@@ -149,13 +214,14 @@ function updateSupplier() {
 }
 
 function deleteSupplier() {
-    if (!selectedId) return alert("Select a row first");
+    if (!selectedId) return;
+
+    if (!confirm("Are you sure you want to delete this supplier?")) return;
 
     let form = document.getElementById("supplierForm");
     form.action = "/suppliers/delete/" + selectedId;
     form.submit();
 }
-
 
 function filterSuppliers() {
     let input = document.getElementById("searchSupplier").value.toLowerCase();
@@ -166,4 +232,7 @@ function filterSuppliers() {
         row.style.display = text.includes(input) ? "" : "none";
     });
 }
+
+// Init
+window.onload = toggleButtons;
 </script>

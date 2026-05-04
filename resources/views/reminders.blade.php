@@ -33,7 +33,7 @@
         <div class="w-full h-[250px]">
             <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg h-full">
 
-                <h2 class="text-base font-medium mb-3">All reminders</h2>
+                <h2 class="text-base font-medium mb-3">Service Maintenance Reminders</h2>
 
                 <div class="overflow-y-auto max-h-[220px] no-scrollbar">
                     <table class="w-full text-xs text-zinc-300 table-fixed">
@@ -48,50 +48,13 @@
                             <tr>
                                 <th class="py-2 px-2 text-left font-medium">Job</th>
                                 <th class="py-2 px-2 text-left font-medium">Description</th>
-                                <th class="py-2 px-2 text-left font-medium">Due date</th>
+                                <th class="py-2 px-2 text-left font-medium">Next Maintenance</th>
                                 <th class="py-2 px-2 text-left font-medium">Status</th>
                                 <th class="py-2 px-2 text-center font-medium">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-zinc-800">
-                            @foreach($reminders as $r)
-                            @php
-                                $isOverdue = \Carbon\Carbon::now()->gt($r->due_date) && $r->status == 'pending';
-                            @endphp
-                            <tr class="{{ $isOverdue ? 'bg-red-900/20' : '' }}">
-                                <td class="py-2 px-2 truncate">#{{ $r->job_order_id }}</td>
-                                <td class="py-2 px-2 truncate">
-                                    {{ $r->description }}
-                                    @if($r->type == 'auto')
-                                        <span class="text-[10px] text-blue-400">(Auto)</span>
-                                    @endif
-                                </td>
-                                <td class="py-2 px-2 truncate">{{ $r->due_date }}</td>
-                                <td class="py-2 px-2">
-                                    @if($r->status == 'completed')
-                                        <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-900/50 text-green-400">
-                                            Completed
-                                        </span>
-                                    @elseif($isOverdue)
-                                        <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-medium bg-red-900/50 text-red-400">
-                                            Overdue
-                                        </span>
-                                    @else
-                                        <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-medium bg-yellow-900/50 text-yellow-400">
-                                            Pending
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="py-2 px-2 text-center">
-                                    @if($r->status != 'completed')
-                                    <a href="/reminders/complete/{{ $r->id }}"
-                                        class="inline-block bg-green-700 hover:bg-green-600 text-white px-2 py-1 rounded text-[11px] transition">
-                                        Done
-                                    </a>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
+                        <tbody id="reminderTableBody" class="divide-y divide-zinc-800">
+                            <!-- Empty by default -->
                         </tbody>
                     </table>
                 </div>
@@ -104,7 +67,7 @@
     {{-- ─── BOTTOM: Job Orders Selector ─── --}}
     <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg">
 
-        <h2 class="text-base font-medium mb-3">Job orders</h2>
+        <h2 class="text-base font-medium mb-3">Job Orders (Please Select Job Order to view services)</h2>
 
         {{-- Search --}}
         <input
@@ -136,7 +99,7 @@
                 <span class="text-sm font-medium text-white truncate customer-name">{{ $job->cust_name }}</span>
                 <span class="text-xs text-zinc-400 truncate vehicle-name">{{ $job->make }}</span>
                 <button
-                    onclick="viewServices({{ $job->job_order_id }})"
+                    onclick="loadReminders({{ $job->job_order_id }})"
                     class="bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98] text-black
                            text-[11px] font-semibold px-3 py-1.5 rounded-lg transition shadow-md whitespace-nowrap">
                     Select
@@ -165,5 +128,57 @@ function filterJobs() {
         const match = row.dataset.customer.includes(q) || row.dataset.vehicle.includes(q);
         row.style.display = match ? '' : 'none';
     });
+}
+
+
+function loadReminders(jobId) {
+    fetch(`/reminders/by-job/${jobId}`)
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById('reminderTableBody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-zinc-500 py-4">
+                            No reminders found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            data.forEach(r => {
+                const isOverdue = new Date(r.due_date) < new Date() && r.status === 'pending';
+
+                tbody.innerHTML += `
+                    <tr class="${isOverdue ? 'bg-red-900/20' : ''}">
+                        <td class="py-2 px-2">#${r.job_order_id}</td>
+                        <td class="py-2 px-2">
+                            ${r.description}
+                            ${r.type === 'auto' ? '<span class="text-[10px] text-blue-400">(Auto)</span>' : ''}
+                        </td>
+                        <td class="py-2 px-2">${r.due_date}</td>
+                        <td class="py-2 px-2">
+                            ${
+                                r.status === 'completed'
+                                ? '<span class="bg-green-900/50 text-green-400 px-2 py-0.5 rounded-full text-[11px]">Completed</span>'
+                                : isOverdue
+                                ? '<span class="bg-red-900/50 text-red-400 px-2 py-0.5 rounded-full text-[11px]">Overdue</span>'
+                                : '<span class="bg-yellow-900/50 text-yellow-400 px-2 py-0.5 rounded-full text-[11px]">No Need to maintain yet</span>'
+                            }
+                        </td>
+                        <td class="py-2 px-2 text-center">
+                            ${
+                                r.status !== 'completed'
+                                ? `<a href="/reminders/complete/${r.id}" class="bg-green-700 text-white px-2 py-1 rounded text-[11px]">Done</a>`
+                                : ''
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+        });
 }
 </script>

@@ -75,7 +75,7 @@
 
                 </div>
           <p class="text-xs text-gray-500">
-            {{ $overdueCount }} overdue • {{ $pendingCount }} pending
+            {{ $overdueCount }} Need to Maintain • {{ $pendingCount }} Active
           </p>
 
         </div>

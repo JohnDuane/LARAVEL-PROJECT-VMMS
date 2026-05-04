@@ -49,4 +49,26 @@ class ReminderController extends Controller
 
         return redirect()->back();
     }
+
+    public function getByJob($id)
+{
+    $services = DB::table('job_order_services') // adjust if your table name is different
+        ->join('services', 'job_order_services.service_id', '=', 'services.id')
+        ->leftJoin('reminders', function ($join) {
+            $join->on('services.id', '=', 'reminders.service_id');
+        })
+        ->where('job_order_services.job_order_id', $id)
+        ->select(
+            'services.id as service_id',
+            'services.name as service_name',
+            'services.interval',
+
+            'reminders.id as reminder_id',
+            'reminders.due_date',
+            'reminders.status'
+        )
+        ->get();
+
+    return response()->json($services);
+}
 }

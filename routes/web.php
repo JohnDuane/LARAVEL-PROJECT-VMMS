@@ -58,6 +58,9 @@ Route::get('/addmechanic', function () {
     return view('addmechanic');
 })->name('addemchanic');
 
+Route::get('/reminders/by-job/{id}', function ($id) {
+    return \App\Models\Reminder::where('job_order_id', $id)->get();
+});
 
 Route::get('/stockin', [PartsController::class, 'index'])
     ->name('stockin');

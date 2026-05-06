@@ -9,7 +9,7 @@
 <body class="bg-[#232323] text-white">
 
 <main class="flex-1 p-6 min-h-screen">
-        <h1 class="text-3xl font-bold text-white">Vehicles and their Owners</h1>
+        <h1 class="text-3xl font-bold text-white">Vehicles and Owners</h1>
 
 <input 
   type="text" 
@@ -26,55 +26,81 @@
   <div class="max-h-[420px] overflow-y-auto no-scrollbar">
     <table class="w-full text-sm text-left text-gray-300">
 
-      <!-- Header -->
-      <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
-        <tr>
-          <th class="px-4 py-3">Customer ID</th>
-          <th class="px-4 py-3">Name</th>
-          <th class="px-4 py-3">Contact</th>
-          <th class="px-4 py-3">Vehicle ID</th>
-          <th class="px-4 py-3">Plate</th>
-          <th class="px-4 py-3">Make</th>
-          <th class="px-4 py-3">Engine</th>
-        </tr>
-      </thead>
 
       <!-- Body -->
-      <tbody id="masterTable" class="divide-y divide-gray-700">
-        @foreach($vehicles as $v)
-        <tr class="hover:bg-[#2e2e2e] transition duration-150">
+      <tbody id="masterTable">
 
-          <td class="px-4 py-3 text-gray-400 customer-id">
-            {{ $v->customer_id }}
+      <tr id="noResults" class="hidden">
+          <td colspan="7" class="text-center py-6 text-gray-400">
+              No results found
           </td>
+      </tr>
 
-          <td class="px-4 py-3 font-medium text-white customer-name">
-            {{ $v->cust_name }}
-          </td>
+        @foreach($customers as $customerId => $customerVehicles)
 
-          <td class="px-4 py-3 text-gray-300 customer-contact">
-            {{ $v->contact_number }}
-          </td>
+            <!-- 🔶 CUSTOMER HEADER ROW -->
+            <tr class="bg-[#2a2a2a] hover:bg-[#333] transition cursor-pointer" 
+                data-customer="{{ $customerId }}"
+                onclick="toggleCustomer('{{ $customerId }}')">
 
-          <td class="px-4 py-3 text-gray-400">
-            {{ $v->vehicle_id }}
-          </td>
+            <td colspan="7" class="px-5 py-4">
 
-          <td class="px-4 py-3 text-gray-300">
-            {{ $v->plate_number }}
-          </td>
+                <div class="flex justify-between items-center">
 
-          <td class="px-4 py-3 text-gray-300 make">
-            {{ $v->make }}
-          </td>
+                    <div>
+                        <p class="text-white font-semibold text-lg">
+                            {{ $customerVehicles[0]->cust_name }}
+                        </p>
+                        <p class="text-gray-400 text-sm">
+                            📞 {{ $customerVehicles[0]->contact_number }}
+                        </p>
+                    </div>
 
-          <td class="px-4 py-3 text-gray-300">
-            {{ $v->engine_model }}
-          </td>
+                    <div class="text-gray-400 text-xs">
+                        Click to view vehicles
+                    </div>
 
-        </tr>
+                </div>
+
+            </td>
+            </tr>
+
+            <!-- 🔻 VEHICLES -->
+           @foreach($customerVehicles as $v)
+<tr class="vehicle-row customer-{{ $customerId }} hidden bg-[#1f1f1f]">
+    <td colspan="7" class="px-6 py-3">
+
+        <div class="grid grid-cols-4 gap-4 text-sm bg-[#262626] p-4 rounded-xl">
+
+            <div>
+                <p class="text-gray-400 text-xs">Plate</p>
+                <p class="text-white font-semibold">{{ $v->plate_number }}</p>
+            </div>
+
+            <div>
+                <p class="text-gray-400 text-xs">Make</p>
+                <p>{{ $v->make }}</p>
+            </div>
+
+            <div>
+                <p class="text-gray-400 text-xs">Engine</p>
+                <p>{{ $v->engine_model }}</p>
+            </div>
+
+            <div>
+                <p class="text-gray-400 text-xs">Vehicle ID</p>
+                <p>{{ $v->vehicle_id }}</p>
+            </div>
+
+        </div>
+
+    </td>
+</tr>
+@endforeach
+
         @endforeach
-      </tbody>
+
+        </tbody>
 
     </table>
   </div>
@@ -94,23 +120,48 @@
 
 <script>
 function filterMaster() {
-  let input = document.getElementById("searchMaster").value.toLowerCase();
-  let rows = document.querySelectorAll("#masterTable tr");
+    let input = document.getElementById("searchMaster").value.toLowerCase();
 
-  rows.forEach(row => {
-    let name = row.querySelector(".customer-name")?.textContent.toLowerCase() || "";
-    let contact = row.querySelector(".customer-contact")?.textContent.toLowerCase() || "";
-    let make = row.querySelector(".make")?.textContent.toLowerCase() || "";
+    // get all customer header rows
+    let headers = document.querySelectorAll("#masterTable tr[data-customer]");
 
-    if (
-      name.includes(input) ||
-      contact.includes(input) ||
-      make.includes(input)
-    ) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
-    }
-  });
+    headers.forEach(header => {
+        let customerId = header.dataset.customer;
+
+        let vehicleRows = document.querySelectorAll(".customer-" + customerId);
+
+        let found = false;
+
+        // check header (customer info)
+        let headerText = header.textContent.toLowerCase();
+        if (headerText.includes(input)) {
+            found = true;
+        }
+
+        // check vehicles under this customer
+        vehicleRows.forEach(row => {
+            let rowText = row.textContent.toLowerCase();
+            if (rowText.includes(input)) {
+                found = true;
+            }
+        });
+
+        // show/hide entire block
+        if (found) {
+            header.style.display = "";
+            vehicleRows.forEach(r => r.style.display = "");
+        } else {
+            header.style.display = "none";
+            vehicleRows.forEach(r => r.style.display = "none");
+        }
+    });
+}
+
+function toggleCustomer(customerId) {
+    let rows = document.querySelectorAll(".customer-" + customerId);
+
+    rows.forEach(row => {
+        row.classList.toggle("hidden");
+    });
 }
 </script>

@@ -12,18 +12,28 @@
     @include('layouts.sidenav')
 
 <main class="flex-1 p-6">
-        <h1 class="text-3xl font-bold text-white">Job Order Records</h1>
+        <h1 class="text-3xl font-bold text-white mb-1">Job Orders</h1>
+        <p class="text-sm text-gray-400">Manage and track all service records</p>
 <div class="max-w-7xl mx-auto pt-5 space-y-4">
+
+
     	<!-- 🔍 Search -->
-<input 
-  type="text" 
-  id="searchHistory"
-  placeholder="Search customer, plate, make, or mechanic..."
-  onkeyup="filterHistory()"
-  class="mb-3 w-full bg-[#1f1f1f] border border-gray-700 text-gray-200 
-         rounded-xl px-4 py-2.5 text-sm 
-         focus:outline-none focus:ring-2 focus:ring-orange-500"
-/>
+<div class="relative">
+    <input 
+        type="text"
+        id="searchHistory"
+        placeholder="Search job orders..."
+        onkeyup="filterHistory()"
+        class="w-full bg-[#1a1a1a] border border-gray-700 text-gray-200 
+               rounded-xl pl-10 pr-4 py-2.5 text-sm 
+               focus:ring-2 focus:ring-orange-500 outline-none"
+    />
+    
+    <span class="absolute left-3 top-2.5 text-gray-500 text-sm">
+        🔍
+    </span>
+</div>
+
 
 <!-- 📦 Table Container -->
 <div class="overflow-hidden rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
@@ -49,49 +59,51 @@
       <tbody id="historyTable" class="divide-y divide-gray-700">
 
         @foreach($data as $v)
-        <tr class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
-            onclick="selectJob({{ $v->job_order_id }})">
+        <tr 
+          onclick="selectJob({{ $v->job_order_id }}, this)"
+          class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer">
 
-          <td class="px-4 py-3 text-gray-400">
+          <td class="px-4 py-4 text-gray-400">
             {{ $v->job_order_id }}
           </td>
 
-          <td class="px-4 py-3 text-white font-medium customer">
+          <td class="px-4 py-4 text-white font-medium customer">
             {{ $v->cust_name }}
           </td>
 
-          <td class="px-4 py-3 text-gray-300 plate">
+          <td class="px-4 py-4 text-gray-300 plate">
             {{ $v->plate_number }}
           </td>
 
-          <td class="px-4 py-3 text-gray-300 make">
+          <td class="px-4 py-4 text-gray-300 make">
             {{ $v->make }}
           </td>
 
-          <td class="px-4 py-3 text-gray-300 mechanic">
+          <td class="px-4 py-4 text-gray-300 mechanic">
             {{ $v->mechanic_name }}
           </td>
 
           <!-- 🔥 STATUS BADGE -->
-          <td class="px-4 py-3">
+          <td class="px-4 py-4">
             @if($v->status == 'completed')
-              <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs">
+              <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs font-medium">
                 Completed
               </span>
             @elseif($v->status == 'pending')
-              <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full text-xs">
+              <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full text-xs font-medium">
                 Pending
               </span>
             @else
-              <span class="bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full text-xs">
+              <span class="bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full text-xs font-medium">
                 {{ $v->status }}
               </span>
             @endif
           </td>
 
-          <td class="px-4 py-3 text-gray-400">
+          <td class="px-4 py-4 text-gray-400">
             {{ $v->date_issued }}
           </td>
+
 
         </tr>
         @endforeach
@@ -131,14 +143,14 @@
 <script>
 let selectedJobId = null;
 
-function selectJob(id) {
+function selectJob(id, el) {
     selectedJobId = id;
 
-    document.querySelectorAll("tr").forEach(row => {
-        row.classList.remove("bg-gray-600");
+    document.querySelectorAll("#historyTable tr").forEach(row => {
+        row.classList.remove("bg-orange-500/20", "border-l-4", "border-orange-500");
     });
 
-    event.currentTarget.classList.add("bg-gray-600");
+    el.classList.add("bg-orange-500/20", "border-l-4", "border-orange-500");
 }
 
 function printJobOrder() {

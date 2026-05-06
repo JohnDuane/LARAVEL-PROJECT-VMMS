@@ -6,8 +6,8 @@
     <title>Document</title>
     @vite(['resources/css/app.css'])
 </head>
-<body class="min-h-screen flex items-center justify-center p-8" style="background: linear-gradient(135deg, #c45c00 0%, #8b3a00 60%, #3a1a00 100%);">
-
+<body class="min-h-screen p-6"
+style="background: linear-gradient(135deg, #c45c00 0%, #8b3a00 60%, #3a1a00 100%);">
 
 @if(session('success'))
 <script>
@@ -23,376 +23,420 @@
 
 <input type="hidden" name="staff_id" id="mechanic_id">
 
-<div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7 w-full max-w-2xl">
+<div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-6 w-full max-w-[1400px] mx-auto">
   <h2 class="text-white text-lg font-medium mb-6">Job Order/Repair Estimate</h2>
 
-  <!-- Row 1 -->
-  <div class="grid grid-cols-2 gap-x-6 gap-y-3 mb-3">
-    
-    <!-- Customers -->
-<div class="overflow-hidden">
-  <label class="block text-sm text-gray-400 mb-2 tracking-wide">Customers</label>
+  <!-- MAIN 3 COLUMN GRID -->
+  <div class="grid grid-cols-3 gap-6 items-start">
 
-<input 
-    type="text" 
-    id="customerSearch"
-    placeholder="Search customer..."
-    onkeyup="filterCustomers()"
-    class="w-full mb-2 bg-[#2a2a2a] border border-[#444] text-white px-3 py-2 rounded"
->
+    <!-- ================= LEFT COLUMN ================= -->
+    <div class="space-y-4">
+    <div id="step1" class="text-orange-400 font-semibold">1. Customer and Vehicles</div>
 
-  <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-40 overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
-    <table class="w-full text-sm text-left text-gray-300">
-      
-      <!-- Header -->
-      <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
-        <tr>
-          <th class="px-4 py-3 font-medium">ID</th>
-          <th class="px-4 py-3 font-medium">Customer</th>
-          <th class="px-4 py-3 text-center font-medium">Action</th>
-        </tr>
-      </thead>
+    <input type="hidden" name="vehicle_id" id="vehicle_id">
+      <!-- Customers and Vehicles-->
+      <div>
+        <label class="block text-sm text-gray-400 mb-2">Customers</label>
+                <div class="overflow-hidden">
 
-      <!-- Body -->
-      <tbody id="customerTableBody" class="divide-y divide-gray-700">
-        @foreach($customers as $customer)
-        <tr 
-          class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
-          onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
-        >
-          <td class="px-4 py-3 text-gray-400">{{ $customer->id }}</td>
-
-          <td class="px-4 py-3 font-medium text-white">
-            {{ $customer->cust_name }}
-          </td>
-
-          <td class="px-4 py-3 text-center">
-            <button 
-              type="button"
-              onclick="event.stopPropagation(); selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
-              class="px-3 py-1.5 text-xs font-semibold rounded-lg 
-                     bg-orange-500 hover:bg-orange-600 
-                     transition duration-150 shadow-md"
+            <input 
+                type="text" 
+                id="customerSearch"
+                placeholder="Search customer..."
+                onkeyup="filterCustomers()"
+                class="w-full mb-2 bg-[#2a2a2a] border border-[#444] text-white px-3 py-2 rounded"
             >
-              Select
-            </button>
-          </td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-  </div>
 
-  <input type="hidden" name="customer_id" id="customer_id">
-</div>
+            <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-40 overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
+                <table class="w-full text-sm text-left text-gray-300">
+                
+                <!-- Header -->
+                <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
+                    <tr>
+                    <th class="px-4 py-3 font-medium">ID</th>
+                    <th class="px-4 py-3 font-medium">Customer</th>
+                    <th class="px-4 py-3 text-center font-medium">Action</th>
+                    </tr>
+                </thead>
+
+                <!-- Body -->
+                <tbody id="customerTableBody" class="divide-y divide-gray-700">
+                    @foreach($customers as $customer)
+                    <tr 
+                    class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
+                    onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
+                    >
+                    <td class="px-4 py-3 text-gray-400">{{ $customer->id }}</td>
+
+                    <td class="px-4 py-3 font-medium text-white">
+                        {{ $customer->cust_name }}
+                    </td>
+
+                    <td class="px-4 py-3 text-center">
+                        <button 
+                        type="button"
+                        onclick="event.stopPropagation(); selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
+                        class="px-3 py-1.5 text-xs font-semibold rounded-lg 
+                                bg-zinc-700 hover:bg-zinc-600 
+                                transition duration-150 shadow-md"
+                        >
+                        Select
+                        </button>
+                    </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                </table>
+            </div>
+
+            <input type="hidden" name="customer_id" id="customer_id">
+            </div>
 
 
 
 
-    <!-- Cars -->
-   <div>
-  <label class="block text-sm text-gray-400 mb-2 tracking-wide">
-    Cars
-  </label>
+                <!-- Cars -->
+            <div id="vehicleSection" class="opacity-50 pointer-events-none">
+                <label class="block text-sm text-gray-400 mb-2">Vehicles</label>
 
-  <input 
-    type="text" 
-    id="vehicleSearch"
-    placeholder="Search plate or make..."
-    onkeyup="filterVehicles()"
-    class="w-full mb-2 bg-[#2a2a2a] border border-[#444] text-white px-3 py-2 rounded"
->
+                <input 
+                    type="text" 
+                    id="vehicleSearch"
+                    placeholder="Search plate or make..."
+                    onkeyup="filterVehicles()"
+                    class="w-full mb-2 bg-[#2a2a2a] border border-[#444] text-white px-3 py-2 rounded"
+                >
 
-  <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-40 overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
-    <table class="w-full text-sm text-left text-gray-300">
+                <div style="scrollbar-width: none; -ms-overflow-style: none;" class="h-40 overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-inner">
+                    <table class="w-full text-sm text-left text-gray-300">
 
-      <!-- Header -->
-      <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
-        <tr>
-          <th class="px-4 py-3 font-medium">Plate Number</th>
-          <th class="px-4 py-3 font-medium">Make</th>
-          <th class="px-4 py-3 text-center font-medium">Action</th>
-        </tr>
-      </thead>
+                    <!-- Header -->
+                    <thead class="bg-[#262626] text-gray-400 uppercase text-xs sticky top-0">
+                        <tr>
+                        <th class="px-4 py-3 font-medium">Plate Number</th>
+                        <th class="px-4 py-3 font-medium">Make</th>
+                        <th class="px-4 py-3 text-center font-medium">Action</th>
+                        </tr>
+                    </thead>
 
-      <!-- Body -->
-      <tbody class="divide-y divide-gray-700" id="vehicleTableBody">
-        @foreach($vehicles as $vehicle)
-        <tr 
-          class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
-          onclick="event.stopPropagation(); selectVehicle('{{ $vehicle->vehicle_id }}', '{{ $vehicle->plate_number }}', '{{ $vehicle->make }}')"
-          data-customer="{{ $vehicle->customer_id }}"
-        >
+                    <!-- Body -->
+                    <tbody class="divide-y divide-gray-700" id="vehicleTableBody">
+                        @foreach($vehicles as $vehicle)
+                        <tr 
+                        class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
+                        onclick="event.stopPropagation(); selectVehicle('{{ $vehicle->vehicle_id }}', '{{ $vehicle->plate_number }}', '{{ $vehicle->make }}')"
+                        data-customer="{{ $vehicle->customer_id }}"
+                        >
 
-          <td class="px-4 py-3 font-medium text-white">
-            {{ $vehicle->plate_number }}
-          </td>
+                        <td class="px-4 py-3 font-medium text-white">
+                            {{ $vehicle->plate_number }}
+                        </td>
 
-          <td class="px-4 py-3 text-gray-300">
-            {{ $vehicle->make }}
-          </td>
+                        <td class="px-4 py-3 text-gray-300">
+                            {{ $vehicle->make }}
+                        </td>
 
-          <td class="px-4 py-3 text-center">
-            <button 
-              type="button"
-              onclick="event.stopPropagation(); selectVehicle('{{ $vehicle->vehicle_id }}')"
-              class="px-3 py-1.5 text-xs font-semibold rounded-lg 
-                     bg-orange-500 hover:bg-orange-600 
-                     transition duration-150 shadow-md"
-            >
-              Select
-            </button>
-          </td>
-        </tr>
-        @endforeach
-      </tbody>
+                        <td class="px-4 py-3 text-center">
+                            <button 
+                                type="button"
+                                onclick="event.stopPropagation(); selectVehicle('{{ $vehicle->vehicle_id }}', '{{ $vehicle->plate_number }}', '{{ $vehicle->make }}')"
+                            class="px-3 py-1.5 text-xs font-semibold rounded-lg 
+                                    bg-zinc-700 hover:bg-zinc-600
+                                    transition duration-150 shadow-md"
+                            >
+                            Select
+                            </button>
+                        </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
 
-    </table>
-  </div>
-
-  <!-- Hidden input -->
-  <input type="hidden" name="vehicle_id" id="vehicle_id">
-</div>
-  </div>
-
-  <!-- Mechanic Dropdown -->
-  <div class="mb-5">
-    <label class="block text-sm text-gray-400 mb-1">Assign Mechanic</label>
-
-    <div class="relative w-64">
-
-      <input 
-        type="text" 
-        id="mechanic_input"
-        onclick="toggleDropdown()"
-        placeholder="Select or search mechanic"
-        class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg pl-3 pr-10 py-2 text-sm"
-      />
-
-      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
+                    </table>
+                </div>
+            </div>
       </div>
 
-      <!-- ⚠️ STILL STATIC (you will replace this in STEP 5) -->
-          
-      <ul id="dropdown" class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">  
-      
-      @foreach($mechanics as $mechanic)
-            <li 
-              class="px-3 py-2 text-sm text-gray-200 hover:bg-orange-600 cursor-pointer"
-              onclick="selectMechanic('{{ $mechanic->staff_name }}', '{{ $mechanic->staff_id }}')"
-            >
-              {{ $mechanic->staff_name }}
-            </li>
-          @endforeach
-
-      </ul>
-
     </div>
-  </div>
 
-  <!-- Bottom -->
-  <div class="grid grid-row-2 gap-6">
 
-    <div class="flex flex-col">
-      <label class="block text-sm text-gray-400 mb-1">Services</label>
-      <div class="bg-zinc-900 text-white rounded-xl p-4 w-full shadow-lg mt-4">
+    <!-- ================= MIDDLE COLUMN ================= -->
+    <div class="space-y-4">
+        <div id="step2" class="text-gray-500">2. Services and Parts</div>
+                <div id="workSection" class="opacity-50 pointer-events-none space-y-4">
 
-    <!-- TABLE -->
-    <table class="w-full text-sm">
-        <thead class="border-b border-zinc-700 text-zinc-400">
-            <tr>
-                <th class="py-2 text-left">SERVICE</th>
-                <th>PRICE</th>
-                <th></th>
-            </tr>
-        </thead>
+            <!-- Mechanic -->
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Assign Mechanic</label>
 
-        <tbody id="servicesTableBody">
-            <!-- dynamic rows -->
-        </tbody>
-    </table>
+                    <div class="relative w-64">
 
-    <!-- ADD SERVICE -->
-    <div class="grid grid-cols-3 gap-3 items-center mt-4">
+                        <input 
+                            type="text" 
+                            id="mechanic_input"
+                            onclick="toggleDropdown()"
+                            placeholder="Select or search mechanic"
+                            class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg pl-3 pr-10 py-2 text-sm"
+                        />
 
-        <div class="relative w-full">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
 
-            <input 
-                type="text" 
-                id="service_input"
-                onclick="toggleServiceDropdown()"
-                placeholder="Select or search service"
-                class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"
-            />
+                        <!-- ⚠️ STILL STATIC (you will replace this in STEP 5) -->
+                            
+                        <ul id="dropdown" class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">  
+                        
+                        @foreach($mechanics as $mechanic)
+                                <li 
+                                class="px-3 py-2 text-sm text-gray-200 hover:bg-orange-600 cursor-pointer"
+                                onclick="selectMechanic('{{ $mechanic->staff_name }}', '{{ $mechanic->staff_id }}')"
+                                >
+                                {{ $mechanic->staff_name }}
+                                </li>
+                            @endforeach
 
-            <ul id="serviceDropdown"
-                class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">
+                        </ul>
 
-                @foreach($services as $service)
-                    <li 
-                        class="px-3 py-2 text-sm text-gray-200 hover:bg-green-600 cursor-pointer"
-                        onclick="selectService('{{ $service->service_id }}', '{{ $service->job_desc }}', '{{ $service->price }}')"
-                    >
-                        {{ $service->job_desc }} - ₱{{ $service->price }}
-                    </li>
-                @endforeach
+                        </div>
 
-            </ul>
+            </div>
+
+            <!-- Services -->
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Services</label>
+
+
+                <div class="bg-zinc-900 text-white rounded-xl p-4 w-full shadow-lg mt-4">
+
+                        <!-- TABLE -->
+                        <table class="w-full text-sm">
+                            <thead class="border-b border-zinc-700 text-zinc-400">
+                                <tr>
+                                    <th class="py-2 text-left">SERVICE</th>
+                                    <th>PRICE</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="servicesTableBody">
+                                <tr id="noServicesRow">
+                                    <td colspan="3" class="text-center text-gray-500 py-3">
+                                    No services added yet
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- ADD SERVICE -->
+                        <div class="grid grid-cols-3 gap-3 items-center mt-4">
+
+                            <div class="relative w-full">
+                                <input 
+                                    type="text" 
+                                    id="service_input"
+                                    onclick="toggleServiceDropdown()"
+                                    placeholder="Select or search service"
+                                    class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"
+                                />
+
+                                <ul id="serviceDropdown"
+                                    class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">
+
+                                    @foreach($services as $service)
+                                        <li 
+                                            class="px-3 py-2 text-sm text-gray-200 hover:bg-green-600 cursor-pointer"
+                                            onclick="selectService('{{ $service->service_id }}', '{{ $service->job_desc }}', '{{ $service->price }}')"
+                                        >
+                                            {{ $service->job_desc }} - ₱{{ $service->price }}
+                                        </li>
+                                    @endforeach
+
+                                </ul>
+                            </div>
+
+                            <input type="hidden" id="service_id">
+                            <input type="hidden" id="service_price">
+
+                            <div class="text-zinc-500 text-sm">auto</div>
+
+                                <button type="button" onclick="addServiceRow()"
+                                    class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1">
+                                    Add
+                                </button>
+                            </div>
+
+                            <!-- FOOTER -->
+                            <div class="flex justify-end mt-4 text-sm">
+                                <p class="text-white font-semibold">
+                                    Services subtotal ₱<span id="servicesSubtotal">0.00</span>
+                                </p>
+                            </div>
+
+                        </div>
+            </div>
+
+            <!-- Parts -->
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Parts</label>
+                        <div class="bg-zinc-900 text-white rounded-xl p-4 w-full max-w-4xl shadow-lg">
+
+                            <!-- TABLE -->
+                            <table class="w-full text-sm">
+                                <thead class="border-b border-zinc-700 text-zinc-400">
+                                    <tr>
+                                        <th class="py-2 text-left">PART NAME</th>
+                                        <th>QTY USED</th>
+                                        <th>UNIT COST</th>
+                                        <th>AMOUNT</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="partsTableBody">
+                                    <!-- EMPTY BY DEFAULT -->
+                                </tbody>
+                            </table>
+
+                            <!-- ADD ROW -->
+                            <div class="grid grid-cols-5 gap-3 items-center mt-4">
+
+                                <!-- 🔥 DYNAMIC PARTS -->
+                                <div class="relative w-full">
+
+                                    <input 
+                                        type="text" 
+                                        id="part_input"
+                                        onclick="togglePartDropdown()"
+                                        placeholder="Select or search part"
+                                        class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"
+                                    />
+
+                                    <ul id="partDropdown"
+                                        class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">
+
+                                        @foreach($parts as $part)
+                                            <!-- AFTER -->
+                                                <li 
+                                                    class="px-3 py-2 text-sm text-gray-200 hover:bg-orange-600 cursor-pointer"
+                                                    data-id="{{ $part->part_id }}"
+                                                    data-name="{{ $part->part_name }}"
+                                                    data-price="{{ $part->price }}"
+                                                    data-stock="{{ $part->stock }}"
+                                                    onclick="selectPartDropdown(this)"
+                                                >
+                                                    {{ $part->part_name }} 
+                                                    <span class="{{ $part->stock == 0 ? 'text-red-400' : 'text-green-400' }} text-xs font-semibold ml-1">
+                                                        (Stock: {{ $part->stock }})
+                                                    </span>
+                                                </li>
+                                        @endforeach
+
+                                    </ul>
+                                </div>
+
+                                <input type="hidden" id="part_id_selected">
+                                <input type="hidden" id="part_price">
+                                <input type="hidden" id="part_stock">
+
+                                <!-- QTY -->
+                                <input type="number" id="qtyInput" placeholder="Qty"
+                                    class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 w-16">
+
+                                <!-- AUTO -->
+                                <div class="text-zinc-500 text-sm">auto</div>
+
+                                <!-- ADD -->
+                                <button type="button" onclick="addPartRow()"
+                                    class="bg-zinc-700 hover:bg-zinc-600 text-white rounded px-3 py-1">
+                                    Add
+                                </button>
+                            </div>
+
+                            <!-- FOOTER -->
+                            <div class="flex justify-between items-center mt-4 text-sm text-zinc-400">
+                                <p>Parts are pulled from database. Quantity cannot exceed stock.</p>
+                                <p class="text-white font-semibold">
+                                    Parts subtotal ₱<span id="partsSubtotal">0.00</span>
+                                </p>
+
+                            </div>
+                                
+                        </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= RIGHT COLUMN ================= -->
+    <div class="flex flex-col h-full space-y-4">
+
+        <!-- Top Content -->
+        <div class="space-y-4">
+        <div id="step3" class="text-gray-500">3. Checkout</div>
+
+            <!-- Selection Summary -->
+            <div class="bg-[#262626] border-l-4 border-orange-500 rounded-xl p-4">
+            <p class="text-sm text-gray-400">Selected:</p>
+
+            <p class="text-white text-sm">
+                Customer: 
+                <span id="selectedCustomerText" class="text-orange-400 font-semibold text-base">None</span>
+            </p>
+
+            <p class="text-white text-sm">
+                Vehicle: 
+                <span id="selectedVehicleText" class="text-orange-400 font-semibold text-base">None</span>
+            </p>
+            </div>
+
+            <!-- Date Issued -->
+            <div>
+            <label class="text-sm text-gray-400">Date Issued</label>
+            <input type="date" name="date_issued"
+                class="w-full bg-[#2a2a2a] border border-[#444] text-white rounded px-2 py-1" required>
+            </div>
+
+            <!-- Status -->
+            <input type="hidden" name="status" value="Pending">
+
         </div>
 
-        <input type="hidden" id="service_id">
-        <input type="hidden" id="service_price">
+        <!-- 🔥 Bottom Section (Pushed Down) -->
+        <div class="mt-auto">
 
-        <div class="text-zinc-500 text-sm">auto</div>
+            <!-- Total -->
+            <div class="flex justify-end mb-4">
+            <p class="text-green-400 font-bold">
+                Total Cost ₱<span id="totalCost">0.00</span>
+            </p>
+            <input type="hidden" name="total_cost" id="total_cost">
+            </div>
 
-        <button type="button" onclick="addServiceRow()"
-            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1">
-            +
-        </button>
-    </div>
+            <!-- Buttons -->
+            <div class="flex justify-end gap-3">
+            <button type="button" onclick="window.location.href='/userdash'"
+                class="border border-gray-400 text-gray-300 rounded-lg px-7 py-2 text-sm">
+                Cancel
+            </button>
 
-    <!-- FOOTER -->
-    <div class="flex justify-end mt-4 text-sm">
-        <p class="text-white font-semibold">
-            Services subtotal ₱<span id="servicesSubtotal">0.00</span>
-        </p>
+            <button type="submit" id="submitBtn"
+                class="bg-orange-600 text-white rounded-lg px-8 py-2 text-sm opacity-50 cursor-not-allowed"
+                disabled>
+                Add
+            </button>
 
-    </div>
+            </div>
 
-
-
-</div>
-    </div>
-
-  </div>
-
-
-  <div class="bg-zinc-900 text-white rounded-xl p-4 w-full max-w-4xl shadow-lg">
-
-    <!-- TABLE -->
-    <table class="w-full text-sm">
-        <thead class="border-b border-zinc-700 text-zinc-400">
-            <tr>
-                <th class="py-2 text-left">PART NAME</th>
-                <th>QTY USED</th>
-                <th>UNIT COST</th>
-                <th>AMOUNT</th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody id="partsTableBody">
-            <!-- EMPTY BY DEFAULT -->
-        </tbody>
-    </table>
-
-    <!-- ADD ROW -->
-    <div class="grid grid-cols-5 gap-3 items-center mt-4">
-
-        <!-- 🔥 DYNAMIC PARTS -->
-        <div class="relative w-full">
-
-            <input 
-                type="text" 
-                id="part_input"
-                onclick="togglePartDropdown()"
-                placeholder="Select or search part"
-                class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"
-            />
-
-            <ul id="partDropdown"
-                class="absolute z-20 mt-1 w-full bg-[#2a2a2a] border border-[#444] rounded-lg shadow-xl max-h-48 overflow-y-auto hidden">
-
-                @foreach($parts as $part)
-                    <!-- AFTER -->
-                        <li 
-                            class="px-3 py-2 text-sm text-gray-200 hover:bg-orange-600 cursor-pointer"
-                            data-id="{{ $part->part_id }}"
-                            data-name="{{ $part->part_name }}"
-                            data-price="{{ $part->price }}"
-                            data-stock="{{ $part->stock }}"
-                            onclick="selectPartDropdown(this)"
-                        >
-                            {{ $part->part_name }} 
-                            <span class="{{ $part->stock == 0 ? 'text-red-400' : 'text-green-400' }} text-xs font-semibold ml-1">
-                                (Stock: {{ $part->stock }})
-                            </span>
-                        </li>
-                @endforeach
-
-            </ul>
         </div>
 
-        <input type="hidden" id="part_id_selected">
-        <input type="hidden" id="part_price">
-        <input type="hidden" id="part_stock">
-
-        <!-- QTY -->
-        <input type="number" id="qtyInput" placeholder="Qty"
-            class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 w-16">
-
-        <!-- AUTO -->
-        <div class="text-zinc-500 text-sm">auto</div>
-        <div class="text-zinc-500 text-sm">auto</div>
-
-        <!-- ADD -->
-        <button type="button" onclick="addPartRow()"
-            class="bg-orange-500 hover:bg-orange-600 text-white rounded px-3 py-1">
-            +
-        </button>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="flex justify-between items-center mt-4 text-sm text-zinc-400">
-        <p>Parts are pulled from database. Quantity cannot exceed stock.</p>
-        <p class="text-white font-semibold">
-            Parts subtotal ₱<span id="partsSubtotal">0.00</span>
-        </p>
+        </div>
 
     </div>
-        
 </div>
 
 
-
-    <div class="grid grid-cols-2 gap-4 mt-4">
-
-  <!-- Date Issued -->
-  <div>
-    <label class="text-sm text-gray-400">Date Issued</label>
-    <input type="date" name="date_issued"
-      class="w-full bg-[#2a2a2a] border border-[#444] text-white rounded px-2 py-1" required>
-  </div>
-
-  <!-- Status -->
-  <input type="hidden" name="status" value="Pending">
-
-</div>
-
-    <div class="flex justify-end mt-6">
-        <p class="text-green-400 font-bold mt-2">
-            Total Cost ₱<span id="totalCost">0.00</span>
-        </p>
-        
-        <input type="hidden" name="total_cost" id="total_cost">
-    </div>
-        
-
-  <!-- Buttons -->
-  <div class="flex justify-end gap-3 mt-6">
-    <button type="button" onclick="window.location.href='/userdash'" class="border border-gray-400 text-gray-300 rounded-lg px-7 py-2 text-sm">
-      Cancel
-    </button>
-
-    <button type="submit" class="bg-orange-600 text-white rounded-lg px-8 py-2 text-sm">
-      Add
-    </button>
-  </div>
-
-</div>
 </form>
 
 </body>
@@ -407,7 +451,11 @@ function selectMechanic(name, id) {
     document.getElementById('mechanic_input').value = name;
     document.getElementById('mechanic_id').value = id;
 
+    document.getElementById('mechanic_input').classList.add('border-green-500');
+
     document.getElementById('dropdown').classList.add('hidden');
+
+    updateSteps();
 }
 
 // close if click outside
@@ -483,47 +531,62 @@ function updateSubtotal() {
         .innerText = partsSubtotal.toFixed(2);
 }
 
+function highlightRow(row, tableId) {
+    document.querySelectorAll(`#${tableId} tr`)
+        .forEach(r => r.classList.remove("bg-orange-600"));
+
+    row.classList.add("bg-orange-600");
+}
 
 function selectCustomer(id, name) {
     document.getElementById('customer_id').value = id;
+    document.getElementById('selectedCustomerText').innerText = name;
 
-    const input = document.getElementById("customerSearch");
+    document.getElementById('vehicleSection')
+        .classList.remove('opacity-50', 'pointer-events-none');
 
-    // ✅ CLEAR TEXT + SET PLACEHOLDER
-    input.value = "";
-    input.placeholder = name;
+        
+    // 🔥 FILTER VEHICLES
+    let rows = document.querySelectorAll("#vehicleTableBody tr");
 
-    // FILTER VEHICLES
-    document.querySelectorAll('[data-customer]').forEach(row => {
-        row.style.display = (row.getAttribute('data-customer') == id) ? '' : 'none';
+    rows.forEach(row => {
+        let customerId = row.getAttribute("data-customer");
+
+        if (customerId == id) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
     });
 
-    // highlight
-    document.querySelectorAll("#customerTableBody tr").forEach(row => {
-        row.classList.remove("bg-gray-600");
-    });
-
-    event.currentTarget.classList.add("bg-gray-600");
+    updateSteps();
 }
+
 
 function selectVehicle(id, plate, make) {
     document.getElementById('vehicle_id').value = id;
+    document.getElementById('selectedVehicleText').innerText = plate + " - " + make;
 
-    const input = document.getElementById("vehicleSearch");
+    // highlight row properly
+    document.querySelectorAll("#vehicleTableBody tr")
+        .forEach(r => r.classList.remove("bg-orange-600"));
 
-    // ✅ SET PLACEHOLDER
-    input.value = "";
-    input.placeholder = plate + " - " + make;
+    event.currentTarget.classList.add("bg-orange-600");
 
-    // highlight
-    document.querySelectorAll("#vehicleTableBody tr").forEach(r => {
-        r.classList.remove("bg-gray-600");
-    });
+    // unlock services + parts
+    document.getElementById('workSection')
+        .classList.remove('opacity-50', 'pointer-events-none');
+
+
+    checkFormReady();
+    updateSteps();
 }
+
 
 let servicesSubtotal = 0;
 
 function addServiceRow() {
+    document.getElementById("noServicesRow")?.remove();
     const serviceId = document.getElementById("service_id").value;
     const serviceName = document.getElementById("service_input").value;
     const price = parseFloat(document.getElementById("service_price").value);
@@ -550,7 +613,7 @@ function addServiceRow() {
             </td>
         </tr>
     `;
-
+    
     document.getElementById("servicesTableBody")
         .insertAdjacentHTML("beforeend", row);
 
@@ -558,6 +621,8 @@ function addServiceRow() {
     updateTotalCost();
 
     document.getElementById("service_input").value = "";
+
+    updateSteps();
 }
 
 function removeServiceRow(btn, price) {
@@ -565,6 +630,7 @@ function removeServiceRow(btn, price) {
     servicesSubtotal -= price;
     updateServiceSubtotal();
     updateTotalCost();
+    updateSteps();
 }
 
 function updateServiceSubtotal() {
@@ -670,6 +736,73 @@ function filterVehicles() {
 
         row.style.display = (plate.includes(input) || make.includes(input)) ? "" : "none";
     });
+}
+
+function updateSteps() {
+    let customer = document.getElementById('customer_id').value;
+    let vehicle = document.getElementById('vehicle_id').value;
+    let mechanic = document.getElementById('mechanic_id').value;
+    let servicesCount = document.querySelectorAll('#servicesTableBody tr').length;
+
+    // ignore "No services" row
+    if (document.getElementById("noServicesRow")) {
+        servicesCount = 0;
+    }
+
+    // STEP 1: Customer + Vehicle
+    if (customer && vehicle) {
+        document.getElementById('step1').className = "text-green-400 font-semibold";
+
+        document.getElementById('step2').className = "text-orange-400";
+
+        // unlock middle section
+        document.getElementById('workSection')
+            .classList.remove('opacity-50', 'pointer-events-none');
+
+    } else {
+        document.getElementById('step1').className = "text-orange-400 font-semibold";
+        document.getElementById('step2').className = "text-gray-500";
+
+        return; // stop here
+    }
+
+    // STEP 2: Mechanic + Service
+    if (mechanic && servicesCount > 0) {
+        document.getElementById('step2').className = "text-green-400";
+
+        document.getElementById('step3').className = "text-orange-400";
+
+    } else {
+        document.getElementById('step2').className = "text-orange-400";
+        document.getElementById('step3').className = "text-gray-500";
+
+        return;
+    }
+
+    // STEP 3: Ready
+    document.getElementById('step3').className = "text-green-400";
+
+    // enable submit
+    let btn = document.getElementById('submitBtn');
+    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    btn.disabled = false;
+}
+
+function checkFormReady() {
+    let customer = document.getElementById('customer_id').value;
+    let vehicle = document.getElementById('vehicle_id').value;
+
+    let btn = document.getElementById('submitBtn');
+
+    if (customer && vehicle) {
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        btn.disabled = false;
+
+
+    } else {
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.disabled = true;
+    }
 }
 
 </script>

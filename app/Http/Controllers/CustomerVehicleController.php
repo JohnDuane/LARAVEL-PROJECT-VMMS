@@ -9,15 +9,20 @@ class CustomerVehicleController extends Controller
 {
     public function index()
     {
-        $vehicles = DB::table('vehicle')
-            ->join('customer', 'vehicle.customer_id', '=', 'customer.id')
+        $customers = DB::table('customer')
+            ->leftJoin('vehicle', 'customer.id', '=', 'vehicle.customer_id')
             ->select(
-                'vehicle.*',
+                'customer.id',
                 'customer.cust_name',
-                'customer.contact_number'
+                'customer.contact_number',
+                'vehicle.vehicle_id',
+                'vehicle.plate_number',
+                'vehicle.make',
+                'vehicle.engine_model'
             )
-            ->get();
+            ->get()
+            ->groupBy('id'); // 🔥 GROUP BY CUSTOMER
 
-        return view('viewcustomervehicles', compact('vehicles'));
+        return view('viewcustomervehicles', compact('customers'));
     }
 }

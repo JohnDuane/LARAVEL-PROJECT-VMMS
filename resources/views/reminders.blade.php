@@ -13,7 +13,7 @@
     <h3 class="text-sm font-medium mb-2">Services for selected job</h3>
 
     <table class="w-full text-xs text-zinc-300">
-        <thead class="text-zinc-500 border-b border-zinc-700">
+        <thead class="bg-zinc-800 text-zinc-400 text-xs uppercase tracking-wide">
             <tr>
                 <th class="text-left py-1">Service</th>
                 <th>Price</th>
@@ -33,7 +33,11 @@
         <div class="w-full h-[250px]">
             <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg h-full">
 
-                <h2 class="text-base font-medium mb-3">Service Maintenance Reminders</h2>
+                <h2 class="text-lg font-semibold text-white mb-0.5">Service Maintenance Reminders</h2>
+                <p class="text-xs text-zinc-500 mb-3">
+                    Select a job below to display its maintenance reminders
+                </p>
+
 
                 <div class="overflow-y-auto max-h-[220px] no-scrollbar">
                     <table class="w-full text-xs text-zinc-300 table-fixed">
@@ -44,7 +48,7 @@
                             <col class="w-[22%]">
                             <col class="w-[15%]">
                         </colgroup>
-                        <thead class="sticky top-0 bg-zinc-900 text-zinc-500 border-b border-zinc-700">
+                        <thead class="bg-zinc-800 text-zinc-400 text-xs uppercase tracking-wide">
                             <tr>
                                 <th class="py-2 px-2 text-left font-medium">Job</th>
                                 <th class="py-2 px-2 text-left font-medium">Description</th>
@@ -53,8 +57,14 @@
                                 <th class="py-2 px-2 text-center font-medium">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="reminderTableBody" class="divide-y divide-zinc-800">
-                            <!-- Empty by default -->
+                        <tbody id="reminderTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center py-10">
+                                    <div class="text-zinc-500 text-sm">
+                                        Select a job order below to view maintenance reminders
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -67,7 +77,7 @@
     {{-- ─── BOTTOM: Job Orders Selector ─── --}}
     <div class="bg-zinc-900/80 backdrop-blur-md p-5 rounded-2xl border border-zinc-800 shadow-lg">
 
-        <h2 class="text-base font-medium mb-3">Job Orders (Please Select Job Order to view services)</h2>
+        <h2 class="text-lg font-semibold text-white mb-4">Job Orders</h2>
 
         {{-- Search --}}
         <input
@@ -99,7 +109,7 @@
                 <span class="text-sm font-medium text-white truncate customer-name">{{ $job->cust_name }}</span>
                 <span class="text-xs text-zinc-400 truncate vehicle-name">{{ $job->make }}</span>
                 <button
-                    onclick="loadReminders({{ $job->job_order_id }})"
+                    onclick="selectJob(event, {{ $job->job_order_id }}); loadReminders({{ $job->job_order_id }})"
                     class="bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98] text-black
                            text-[11px] font-semibold px-3 py-1.5 rounded-lg transition shadow-md whitespace-nowrap">
                     Select
@@ -115,10 +125,12 @@
 </html>
 
 <script>
-function selectJob(id, vehicle) {
-    document.getElementById('job_order_id').value = id;
-    document.getElementById('selectedJobText').innerText =
-        'Job #' + id + ' — ' + vehicle;
+function selectJob(event, id) {
+    document.querySelectorAll('.job-row')
+        .forEach(r => r.classList.remove('bg-zinc-800'));
+
+    const row = event.currentTarget.closest('.job-row');
+    row.classList.add('bg-zinc-800');
 }
 
 function filterJobs() {
@@ -132,6 +144,18 @@ function filterJobs() {
 
 
 function loadReminders(jobId) {
+
+    const tbody = document.getElementById('reminderTableBody');
+
+    tbody.innerHTML = `
+    <tr>
+        <td colspan="5" class="text-center py-4 text-zinc-500">
+            Loading reminders...
+        </td>
+    </tr>
+    `;
+
+
     fetch(`/reminders/by-job/${jobId}`)
         .then(res => res.json())
         .then(data => {

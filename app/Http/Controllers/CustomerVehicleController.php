@@ -13,7 +13,7 @@ class CustomerVehicleController extends Controller
             ->leftJoin('vehicle', 'customer.id', '=', 'vehicle.customer_id')
             ->select(
                 'customer.id',
-                'customer.cust_name',
+                DB::raw("CONCAT(customer.first_name, ' ', IFNULL(customer.middle_name, ''), ' ', customer.last_name) as cust_name"),
                 'customer.contact_number',
                 'vehicle.vehicle_id',
                 'vehicle.plate_number',

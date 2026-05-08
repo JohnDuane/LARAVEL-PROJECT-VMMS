@@ -33,7 +33,7 @@
     </div>
 
     <!-- Title -->
-    <p class="text-center text-sm text-black/80 mb-6">
+    <p class="text-center text-sm text-white/80 mb-6">
       Welcome back! Please enter your details.
     </p>
 

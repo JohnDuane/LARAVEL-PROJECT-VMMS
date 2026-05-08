@@ -110,8 +110,9 @@
                 <span class="text-xs text-zinc-400 truncate vehicle-name">{{ $job->make }}</span>
                 <button
                     onclick="selectJob(event, {{ $job->job_order_id }}); loadReminders({{ $job->job_order_id }})"
-                    class="bg-[#ff8800] hover:bg-[#e67600] active:scale-[0.98] text-black
-                           text-[11px] font-semibold px-3 py-1.5 rounded-lg transition shadow-md whitespace-nowrap">
+                    class="bg-[#ff8800] hover:bg-[#e67600]
+                    text-black text-[10px] font-semibold
+                    px-2.5 py-1 rounded-md">
                     Select
                 </button>
             </div>
@@ -126,11 +127,24 @@
 
 <script>
 function selectJob(event, id) {
-    document.querySelectorAll('.job-row')
-        .forEach(r => r.classList.remove('bg-zinc-800'));
 
+    // Remove ALL active classes from every row
+    document.querySelectorAll('.job-row').forEach(r => {
+        r.classList.remove(
+            'bg-orange-500/10',
+            'border-l-4',
+            'border-orange-500'
+        );
+    });
+
+    // Add active classes to clicked row
     const row = event.currentTarget.closest('.job-row');
-    row.classList.add('bg-zinc-800');
+
+    row.classList.add(
+        'bg-orange-500/10',
+        'border-l-4',
+        'border-orange-500'
+    );
 }
 
 function filterJobs() {
@@ -166,7 +180,15 @@ function loadReminders(jobId) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" class="text-center text-zinc-500 py-4">
-                            No reminders found
+                            <div class="flex flex-col items-center justify-center py-12 text-center">
+                                <p class="text-zinc-400 text-sm font-medium">
+                                    No maintenance reminders yet
+                                </p>
+
+                                <p class="text-zinc-500 text-xs mt-1">
+                                    Select a job order below to load reminders
+                                </p>
+                            </div>
                         </td>
                     </tr>
                 `;

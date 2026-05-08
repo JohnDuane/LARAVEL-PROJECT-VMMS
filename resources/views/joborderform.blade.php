@@ -6,8 +6,7 @@
     <title>Document</title>
     @vite(['resources/css/app.css'])
 </head>
-<body class="min-h-screen p-6"
-style="background: linear-gradient(135deg, #c45c00 0%, #8b3a00 60%, #3a1a00 100%);">
+<body class="min-h-screen p-6">
 
 @if(session('success'))
 <script>

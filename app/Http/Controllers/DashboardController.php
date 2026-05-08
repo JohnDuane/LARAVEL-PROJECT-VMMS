@@ -23,7 +23,7 @@ class DashboardController extends Controller
         ->count();
 
     $overdueCount = Reminder::where('status', 'pending')
-        ->whereDate('due_date', '<', Carbon::today())
+        ->whereDate('due_date', '<=', Carbon::today())
         ->count();
 
     $totalAlerts = $pendingCount + $overdueCount;

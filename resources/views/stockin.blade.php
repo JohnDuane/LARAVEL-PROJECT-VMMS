@@ -7,10 +7,19 @@
     @vite(['resources/css/app.css'])
 </head>
 <body>
-    <main class="flex-1 p-6 min-h-screen">
-    <h1 class="text-3xl font-bold text-white">Parts Inventory</h1>
+    <main class="flex-1 p-8 min-h-screen bg-[#232323]">
+        
+    <div class="mb-6">
+        <h1 class="text-4xl font-bold text-white">
+            Parts Inventory
+        </h1>
 
-<div class="max-w-7xl mx-auto pt-5 flex gap-6">
+        <p class="text-gray-400 mt-1 text-sm">
+            Manage parts, monitor stock levels, and update inventory.
+        </p>
+    </div>
+
+<div class="max-w-7xl mx-auto flex gap-8 items-start">
 
     <!-- PARTS TABLE -->
     <div class="w-[60%]">
@@ -18,15 +27,18 @@
         <input 
             type="text"
             id="searchPart"
-            placeholder="Search part..."
+            placeholder="Search parts..."
             onkeyup="filterParts()"
-            class="w-full mb-3 bg-[#1f1f1f] border border-gray-700 text-gray-200 
-                   rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500"
+            class="w-full mb-4 bg-[#181818] border border-gray-700 
+                text-gray-200 rounded-2xl px-5 py-3 text-sm
+                placeholder:text-gray-500
+                focus:outline-none focus:ring-2 focus:ring-orange-500
+                transition"
         />
 
-        <div class="h-[630px] overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f]">
+        <div class="min-h-[520px] max-h-[620px] overflow-y-auto rounded-2xl border border-gray-700 bg-[#1f1f1f] shadow-lg">
             <table class="w-full text-sm text-gray-300">
-    <thead class="bg-[#262626] text-xs uppercase sticky top-0">
+    <thead class="bg-[#262626] text-gray-400 text-xs uppercase sticky top-0 tracking-wide">
     <tr>
         <th class="px-4 py-3">ID</th>
         <th class="px-4 py-3">Part</th>
@@ -37,8 +49,15 @@
 
 <tbody id="partTable">
     @foreach($parts as $p)
-    <tr onclick="selectPart({{ $p->part_id }}, '{{ $p->part_name }}', '', {{ $p->price }})"
-        class="hover:bg-[#2e2e2e] cursor-pointer">
+    <tr 
+        onclick="selectPart(
+            this,
+            {{ $p->part_id }},
+            '{{ $p->part_name }}',
+            '',
+            {{ $p->price }}
+        )"
+        class="hover:bg-[#2e2e2e] cursor-pointer transition">
 
         <td class="px-4 py-3">{{ $p->part_id }}</td>
         <td class="px-4 py-3">{{ $p->part_name }}</td>
@@ -62,7 +81,7 @@
 
         <input type="hidden" id="part_id" name="part_id">
         
-        <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-7">
+        <div class="bg-[#1a1a1a] border border-[#333] rounded-2xl p-7 shadow-xl">
 
     <h2 class="text-white text-lg mb-5">Add / Edit Part</h2>
 
@@ -107,9 +126,24 @@
 
     <!-- BUTTONS -->
     <div class="flex justify-end gap-3 mt-6">
-        <button type="button" onclick="addPart()" class="btn">Add</button>
-        <button type="button" onclick="updatePart()" class="btn">Update</button>
-        <button type="button" onclick="deletePart()" class="btn">Delete</button>
+        <button type="button" class="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg" onclick="addPart()" class="btn">Add</button>
+        <button 
+            id="updateBtn"
+            type="button" 
+            onclick="updatePart()" 
+            class="btn opacity-50 cursor-not-allowed"
+            disabled>
+            Update
+        </button>
+
+        <button 
+            id="deleteBtn"
+            type="button" 
+            onclick="deletePart()" 
+            class="btn opacity-50 cursor-not-allowed bg-gray-700"
+            disabled>
+            Delete
+        </button>
         <button type="button" onclick="openAdjustModal()" 
             class="bg-blue-500 px-4 py-2 rounded-lg">
             Adjust Stock
@@ -120,7 +154,7 @@
         </form>
 
 <div id="adjustModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center">
-    <div class="bg-[#1f1f1f] p-6 rounded-xl w-80">
+    <div class="bg-[#1f1f1f] border border-gray-700 p-6 rounded-2xl w-80 shadow-2xl">
 
         <h2 class="text-white text-lg mb-4">Adjust Stock</h2>
 
@@ -169,14 +203,43 @@
 <script>
 
 let selectedId = null;
+let selectedPartRow = null;
 
-function selectPart(id, name, desc, price) {
+function selectPart(row, id, name, desc, price) {
+
+    // remove old highlight
+    if (selectedPartRow) {
+        selectedPartRow.classList.remove("bg-orange-500/20");
+    }
+
+    // highlight new row
+    selectedPartRow = row;
+    row.classList.add("bg-orange-500/20");
+
     selectedId = id;
 
     document.getElementById("part_id").value = id;
     document.getElementById("part_name").value = name;
-    // document.getElementById("description").value = desc;
     document.getElementById("price").value = price;
+
+    togglePartButtons();
+}
+
+function togglePartButtons() {
+
+    let disabled = !selectedId;
+
+    let updateBtn = document.getElementById("updateBtn");
+    let deleteBtn = document.getElementById("deleteBtn");
+
+    updateBtn.disabled = disabled;
+    deleteBtn.disabled = disabled;
+
+    updateBtn.classList.toggle("opacity-50", disabled);
+    updateBtn.classList.toggle("cursor-not-allowed", disabled);
+
+    deleteBtn.classList.toggle("opacity-50", disabled);
+    deleteBtn.classList.toggle("cursor-not-allowed", disabled);
 }
 
 function addPart() {
@@ -262,4 +325,7 @@ function submitAdjustStock() {
     form.submit();
 }
 
+window.onload = function() {
+    togglePartButtons();
+};
 </script>

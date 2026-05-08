@@ -111,7 +111,7 @@
                 <option value="">Select Customer</option>
                   @foreach($customers as $c)
                     <option value="{{ $c->id }}">
-                      {{ $c->cust_name }}
+                      {{ $c->first_name }} {{ $c->last_name }}
                     </option>
                   @endforeach
     </select>

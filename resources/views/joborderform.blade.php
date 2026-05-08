@@ -63,18 +63,18 @@
                     @foreach($customers as $customer)
                     <tr 
                     class="hover:bg-[#2e2e2e] transition duration-150 cursor-pointer"
-                    onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
+                    onclick="selectCustomer('{{ $customer->id }}', '{{ $customer->first_name }} {{ $customer->middle_name }} {{ $customer->last_name }}')"
                     >
                     <td class="px-4 py-3 text-gray-400">{{ $customer->id }}</td>
 
                     <td class="px-4 py-3 font-medium text-white">
-                        {{ $customer->cust_name }}
+                        {{ $customer->first_name }} {{ $customer->middle_name }} {{ $customer->last_name }}
                     </td>
 
                     <td class="px-4 py-3 text-center">
                         <button 
                         type="button"
-                        onclick="event.stopPropagation(); selectCustomer('{{ $customer->id }}', '{{ $customer->cust_name }}')"
+                        onclick="event.stopPropagation(); selectCustomer('{{ $customer->id }}', '{{ $customer->first_name }} {{ $customer->middle_name }} {{ $customer->last_name }}')"
                         class="px-3 py-1.5 text-xs font-semibold rounded-lg 
                                 bg-zinc-700 hover:bg-zinc-600 
                                 transition duration-150 shadow-md"

@@ -58,14 +58,16 @@
             onclick="selectCustomer(
               this,
               {{ $c->id }},
-              {{ json_encode($c->cust_name) }},
+              {{ json_encode($c->first_name) }},
+              {{ json_encode($c->middle_name) }},
+              {{ json_encode($c->last_name) }},
               {{ json_encode($c->contact_number) }},
               {{ json_encode($c->address) }}
             )"
           >
             <td class="px-4 py-3 text-gray-400">{{ $c->id }}</td>
             <td class="px-4 py-3 font-medium text-white customer-name">
-              {{ $c->cust_name }}
+              {{ trim($c->first_name . ' ' . $c->middle_name . ' ' . $c->last_name) }}
             </td>
             <td class="px-4 py-3 text-gray-300 customer-contact">
               {{ $c->contact_number }}
@@ -105,8 +107,54 @@
     <!-- Name -->
     <div class="mb-4">
         <label class="block text-sm text-gray-400 mb-1">Customer Name</label>
-        <input type="text" id="cust_name" name="cust_name" required
-            class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"/>
+        <!-- <input type="text" id="cust_name" name="cust_name" required
+            class="w-full bg-[#2a2a2a] border border-[#444] text-gray-100 rounded-lg px-3 py-2 text-sm"/> -->
+
+            
+            
+            <!-- First Name -->
+            <div class="mb-4">
+                <label class="block text-sm text-gray-400 mb-1">
+                    First Name
+                </label>
+
+                <input type="text"
+                    id="first_name"
+                    name="first_name"
+                    required
+                    class="w-full bg-[#2a2a2a] border border-[#444]
+                          text-gray-100 rounded-lg px-3 py-2 text-sm"/>
+            </div>
+
+            <!-- Middle Name -->
+            <div class="mb-4">
+                <label class="block text-sm text-gray-400 mb-1">
+                    Middle Name
+                </label>
+
+                <input type="text"
+                    id="middle_name"
+                    name="middle_name"
+                    class="w-full bg-[#2a2a2a] border border-[#444]
+                          text-gray-100 rounded-lg px-3 py-2 text-sm"/>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-4">
+                <label class="block text-sm text-gray-400 mb-1">
+                    Last Name
+                </label>
+
+                <input type="text"
+                    id="last_name"
+                    name="last_name"
+                    required
+                    class="w-full bg-[#2a2a2a] border border-[#444]
+                          text-gray-100 rounded-lg px-3 py-2 text-sm"/>
+            </div>
+
+
+
     </div>
 
     <!-- Contact -->
@@ -161,7 +209,15 @@
 let selectedCustomerId = null;
 let selectedCustomerRow = null;
 
-function selectCustomer(row, id, name, contact, address) {
+function selectCustomer(
+    row,
+    id,
+    firstName,
+    middleName,
+    lastName,
+    contact,
+    address
+) {
     // Remove old highlight
     if (selectedCustomerRow) {
         selectedCustomerRow.classList.remove("bg-orange-500/20");
@@ -175,7 +231,9 @@ function selectCustomer(row, id, name, contact, address) {
 
     // Fill form
     document.getElementById('id').value = id;
-    document.getElementById('cust_name').value = name;
+    document.getElementById('first_name').value = firstName;
+    document.getElementById('middle_name').value = middleName;
+    document.getElementById('last_name').value = lastName;
     document.getElementById('contact_number').value = contact;
     document.getElementById('address').value = address;
 

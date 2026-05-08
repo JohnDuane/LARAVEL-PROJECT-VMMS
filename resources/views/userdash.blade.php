@@ -30,7 +30,7 @@
     </h2>
 
 
-    <div class-"h-56">
+    <div>
         <canvas id="jobOrdersChart"></canvas>
       </div>
   </div>

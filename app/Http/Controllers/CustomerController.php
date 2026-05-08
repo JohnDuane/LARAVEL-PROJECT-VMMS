@@ -9,8 +9,10 @@ class CustomerController extends Controller
 {
     public function store(Request $request)
 {
-    $customer = Customer::create([
-        'cust_name' => $request->cust_name,
+    Customer::create([
+        'first_name' => $request->first_name,
+        'middle_name' => $request->middle_name,
+        'last_name' => $request->last_name,
         'contact_number' => $request->contact_number,
         'address' => $request->address,
     ]);
@@ -36,9 +38,11 @@ class CustomerController extends Controller
 public function update(Request $request)
 {
     \App\Models\Customer::where('id', $request->id)->update([
-        'cust_name' => $request->cust_name,
+        'first_name' => $request->first_name,
+        'middle_name' => $request->middle_name,
+        'last_name' => $request->last_name,
         'contact_number' => $request->contact_number,
-        'address' => $request->address
+        'address' => $request->address,
     ]);
 
     return back();

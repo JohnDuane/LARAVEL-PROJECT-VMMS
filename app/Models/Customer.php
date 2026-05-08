@@ -10,8 +10,10 @@ class Customer extends Model
     protected $table = 'customer';
 
     protected $fillable = [
-    'cust_name',
-    'contact_number',
-    'address'
+        'first_name',
+        'middle_name',
+        'last_name',
+        'contact_number',
+        'address'
     ];
 }

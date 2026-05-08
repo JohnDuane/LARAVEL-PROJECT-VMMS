@@ -19,7 +19,15 @@ class ReminderController extends Controller
             ->join('vehicle', 'job_order.vehicle_id', '=', 'vehicle.vehicle_id')
             ->select(
                 'job_order.job_order_id',
-                'customer.cust_name',
+                DB::raw("
+                    CONCAT(
+                        customer.first_name,
+                        ' ',
+                        customer.middle_name,
+                        ' ',
+                        customer.last_name
+                    ) as customer_name
+                "),
                 'vehicle.make'
             )
             ->get();

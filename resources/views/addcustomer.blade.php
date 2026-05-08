@@ -290,12 +290,20 @@ function filterCustomers() {
 const customerForm = document.getElementById("customerForm");
 
 customerForm.addEventListener("submit", function(e) {
+
+
     e.preventDefault();
 
-    const action = e.submitter.getAttribute("formaction");
+    const action = document.querySelector(
+        'button[type="submit"]:focus'
+    )?.getAttribute("formaction");
+
+    alert(action);
+
+    console.log(action);
 
     // 👉 If NOT ADD → just submit normally (no modal, no fetch)
-    if (action !== "{{ route('customer.store') }}") {
+    if (!action.includes('/customer/store')) {
         this.action = action;   // set correct route
         this.submit();          // normal Laravel request
         return;
@@ -303,6 +311,9 @@ customerForm.addEventListener("submit", function(e) {
 
     // 👉 ONLY ADD uses AJAX + modal
     let formData = new FormData(this);
+
+    console.log("FETCH STARTING");
+    console.log(action);
 
     fetch(action, {
         method: "POST",
@@ -312,9 +323,26 @@ customerForm.addEventListener("submit", function(e) {
         },
         body: formData
     })
-    .then(res => res.json())
+    .then(async res => {
+        const text = await res.text();
+
+        console.log("RAW RESPONSE:");
+        console.log(text);
+
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error("JSON PARSE FAILED");
+            console.error(e);
+            return null;
+        }
+    })
+
     .then(data => {
-        if (data.success) {
+
+        console.log("PARSED DATA:", data);
+
+        if (data && data.success) {
             const modal = document.getElementById('vehicleModal');
             const content = document.getElementById('modalContent');
 

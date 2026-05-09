@@ -15,18 +15,18 @@ class DashboardController extends Controller
 {
     // 🔢 Existing stats
     $totalVehicles = Vehicle::count();
-    $totalJobOrders = ViewJobOrder::count();
+    $totalJobOrders = DB::table('job_order')->count();
     $totalReminders = Reminder::where('status', 'pending')->count();
 
     $pendingCount = Reminder::where('status', 'pending')
-        ->whereDate('due_date', '>=', Carbon::today())
+        ->whereDate('due_date', '>', Carbon::today())
         ->count();
 
     $overdueCount = Reminder::where('status', 'pending')
-        ->whereDate('due_date', '<=', Carbon::today())
+        ->whereDate('due_date', '<', Carbon::today())
         ->count();
 
-    $totalAlerts = $pendingCount + $overdueCount;
+    $totalAlerts = $totalReminders;
 
     // 📊 ADD THIS (your chart logic)
     $jobOrders = DB::table('job_order')
@@ -40,26 +40,20 @@ class DashboardController extends Controller
         ->get();
 
     $count = 1;
-    foreach ($jobOrders as $order) {
-        $labels[] = 'Week ' . $count++;
-        $data[] = $order->total;
-    }
-    //for chart testing
-    // $labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-    // $data = [2, 5, 3, 8];
 
+
+    $labels = [];
+    $data = [];
 
     if ($jobOrders->isEmpty()) {
         $labels = ['No Data Yet'];
         $data = [0];
-    }
-
-    foreach ($jobOrders as $order) {
-        $year = substr($order->week, 0, 4);
-        $week = substr($order->week, 4);
-
-        $labels[] = "Week $week";
-        $data[] = $order->total;
+    } else {
+        $count = 1;
+        foreach ($jobOrders as $order) {
+            $labels[] = 'Week ' . $count++;
+            $data[] = $order->total;
+        }
     }
 
     return view('userdash', compact(

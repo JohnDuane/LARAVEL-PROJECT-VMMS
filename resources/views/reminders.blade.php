@@ -54,7 +54,7 @@
                 class="job-row bg-[#2a2a2a] hover:bg-[#333] transition cursor-pointer
                     rounded-xl mb-3 border border-zinc-700"
                 onclick="toggleJob('{{ $job->job_order_id }}')"
-                data-customer="{{ strtolower($job->cust_name) }}"
+                data-customer="{{ strtolower(trim(($job->first_name ?? '') . ' ' . ($job->middle_name ?? '') . ' ' . ($job->last_name ?? ''))) }}"
                 data-vehicle="{{ strtolower($job->make) }}"
             >
 
@@ -62,7 +62,7 @@
 
                     <div>
                         <p class="text-white font-semibold text-lg">
-                            {{ $job->cust_name }}
+                            {{ trim(($job->first_name ?? '') . ' ' . ($job->middle_name ?? '') . ' ' . ($job->last_name ?? '')) }}
                         </p>
 
                         <div class="flex gap-4 mt-1 text-sm text-gray-400">

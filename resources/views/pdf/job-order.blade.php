@@ -216,7 +216,7 @@
             <td style="text-align: center;">
                 __________________________<br>
                 <strong>Customer Signature</strong><br>
-                {{ $view->cust_name ?? 'N/A' }}`
+                {{ $view->cust_name ?? 'N/A' }}
             </td>
 
             <td style="text-align: center;">

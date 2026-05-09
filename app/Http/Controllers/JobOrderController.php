@@ -148,7 +148,7 @@ public function generatePDF($id)
     $job = \App\Models\JobOrder::findOrFail($id);
 
 // GET CUSTOMER + VEHICLE + MECHANIC (from view or joins)
-$view = \App\Models\ViewJobOrder::find($id);
+$view = \App\Models\ViewJobOrder::where('job_order_id', $id)->first();
 
 $services = \DB::table('job_order_services')
     ->join('services', 'job_order_services.service_id', '=', 'services.service_id')

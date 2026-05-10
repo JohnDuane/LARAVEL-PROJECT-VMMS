@@ -12,10 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('services', function (Blueprint $table) {
-        $table->id('service_id');
-        $table->string('job_desc')->nullable();
-        $table->decimal('price', 10, 2)->nullable();
-        $table->timestamps();
+            $table->id('service_id');
+            $table->string('job_desc')->nullable();
+            $table->decimal('price', 10, 2)->nullable();
+            $table->integer('interval_value')->nullable();
+            $table->string('interval_unit', 20)->nullable();
+            $table->timestamps();
         });
     }
 

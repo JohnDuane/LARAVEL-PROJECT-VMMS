@@ -9,7 +9,7 @@
 
 @include('layouts.logout')
 
-<body class="bg-[#232323] text-white">
+<body class="text-white">
 
 @include('layouts.sidenav')
 

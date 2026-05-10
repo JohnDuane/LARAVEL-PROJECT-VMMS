@@ -37,7 +37,13 @@
       Welcome back! Please enter your details.
     </p>
 
-<form method="POST" action="/login">
+    @if ($errors->any())
+        <div class="bg-red-500 text-white p-2 rounded mb-4">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
+<form method="POST" action="{{ route('login') }}">
     @csrf
         <!-- Email -->
     <div class="mb-2">
@@ -61,7 +67,7 @@
     <!-- Remember + Forgot -->
     <div class="flex justify-between items-center text-sm mb-2">
       <label class="flex items-center gap-2">
-        <input type="checkbox" class="accent-orange-400">
+        <input type="checkbox" name="remember" class="accent-orange-400">
         Remember me
       </label>
       <a href="#" class="text-orange-200 hover:underline">Forgot password</a>

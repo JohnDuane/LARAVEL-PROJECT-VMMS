@@ -56,15 +56,15 @@ class DashboardController extends Controller
         }
     }
 
-    return view('userdash', compact(
+    return view('dashboard', compact(
         'totalVehicles', 
         'totalJobOrders', 
         'totalReminders', 
         'pendingCount',
         'overdueCount',
         'totalAlerts',
-        'labels',      // ✅ ADD THIS
-        'data'         // ✅ ADD THIS
+        'labels',
+        'data'
     ));
 }
 

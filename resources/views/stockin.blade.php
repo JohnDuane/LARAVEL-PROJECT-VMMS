@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css'])
 </head>
 <body>
-    <main class="flex-1 p-8 min-h-screen bg-[#232323]">
+    <main class="flex-1 p-8 min-h-screen">
         
     <div class="mb-6">
         <h1 class="text-4xl font-bold text-white">

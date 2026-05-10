@@ -7,7 +7,7 @@
     @vite('resources/css/app.css')
 </head>
     @include('layouts.sidenav')
-<body class="bg-[#232323] text-white">
+<body class="text-white">
     @include('layouts.logout')
 
 <main class="flex-1 p-6 min-h-screen">

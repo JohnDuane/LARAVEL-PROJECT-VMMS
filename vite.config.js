@@ -8,4 +8,14 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+
+    //FOR OTHER DEVICES TEST ONLY
+    // server: {
+    //     host: '0.0.0.0',
+    //     port: 5173,
+    //     hmr: {
+    //         host: '192.168.8.37', // 👈 CHANGE THIS to your Mac IP
+    //     },
+    // },
+
 });

@@ -229,9 +229,9 @@
                         </table>
 
                         <!-- ADD SERVICE -->
-                        <div class="grid grid-cols-3 gap-3 items-center mt-4">
+                        <div class="grid grid-cols-4 gap-3 items-center mt-4">
 
-                            <div class="relative w-full">
+                            <div class="relative col-span-2 w-full">
                                 <input 
                                     type="text" 
                                     id="service_input"
@@ -299,10 +299,10 @@
                             </table>
 
                             <!-- ADD ROW -->
-                            <div class="grid grid-cols-5 gap-3 items-center mt-4">
+                            <div class="grid grid-cols-6 gap-3 items-center mt-4">
 
                                 <!-- 🔥 DYNAMIC PARTS -->
-                                <div class="relative w-full">
+                                <div class="relative col-span-2 w-full">
 
                                     <input 
                                         type="text" 

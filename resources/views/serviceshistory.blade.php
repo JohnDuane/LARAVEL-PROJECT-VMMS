@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 <body class="text-white">
     @include('layouts.sidenav')
 
-<main class="flex-1 p-8 pb-24">
+<main class="flex-1 p-8 pb-7">
         <div>
             <h1 class="text-3xl font-bold text-white leading-tight">
                 Job Orders

@@ -18,7 +18,7 @@
 <body>
     @include('layouts.sidenav')
 
-    <main class="flex-1 p-6 min-h-screen">
+    <main class="flex-1 p-4 md:p-6 min-h-screen w-full">
         <h1 class="text-3xl font-bold text-white mb-[9px]">Dashboard</h1>
        
 
@@ -36,7 +36,7 @@
   </div>
 
   <!-- Stats -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
 
     <button onclick="window.location.href='/viewcustomervehicles'"
       class="bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md hover:bg-zinc-800 transition w-full text-left">

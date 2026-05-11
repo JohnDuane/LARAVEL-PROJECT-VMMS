@@ -62,7 +62,7 @@
 
                     <div>
                         <p class="text-white font-semibold text-lg">
-                            {{ trim(($job->first_name ?? '') . ' ' . ($job->middle_name ?? '') . ' ' . ($job->last_name ?? '')) }}
+                            {{ $job->customer_name }}
                         </p>
 
                         <div class="flex gap-4 mt-1 text-sm text-gray-400">

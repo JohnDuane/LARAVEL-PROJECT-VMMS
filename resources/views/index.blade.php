@@ -19,7 +19,7 @@
 <section id="home" class="position-relative">
 
     <!-- Background -->
-    <img src="{{ asset('images/carsbg.jpeg') }}"
+    <img src="{{ asset('images/carsbg.jpg') }}"
          alt="Background"
          style="
             width: 100%;
@@ -50,33 +50,59 @@
 </section>
 
 <!-- ABOUT SECTION -->
+<!-- ABOUT SECTION -->
 <section id="about"
-         class="container py-5 mt-[50px]"
-         style="min-height: 100vh; ">
+         class="container py-5"
+         style="min-height: 100vh;">
 
-    <h1 class="font-weight-bold mb-14 text-white text-center text-4xl">
+    <h1 class="font-weight-bold mb-5 text-white text-center text-4xl">
         About Us
     </h1>
 
-    <div class="d-flex gap-4 text-center">
-        <p class="text-white flex-fill px-[50px] py-[25px] text-xl">
-            Our auto repair shop, located in Carmen, Davao del Norte, Philippines, 
-            is a trusted local service center dedicated to providing reliable and 
-            high-quality automotive repairs. We cater to a wide range of vehicle concerns, 
-            from routine maintenance such as oil changes and tune-ups to more complex engine 
-            diagnostics and mechanical repairs. With a commitment to honesty and efficiency, 
-            we ensure that every customer receives proper care for their vehicle at a fair 
-            and reasonable price.
-        </p>
+    <div class="row align-items-center">
 
-        <p class="text-white flex-fill px-[50px] py-[25px] text-xl">
-            The shop is proudly run by Bernie S. Aranda, whose hands-on experience and 
-            dedication to quality service have built a strong reputation in the community. 
-            Under his leadership, the business continues to prioritize customer satisfaction, 
-            safety, and long-term vehicle performance. Our goal is to be the go-to auto repair 
-            shop in the area, offering dependable service that drivers in Carmen and nearby towns 
-            can always rely on.
-        </p>
+        <!-- IMAGE -->
+        <div class="col-md-6 mb-4">
+            <img src="{{ asset('images/sideimage.png') }}"
+                 alt="Auto Shop"
+                 class="img-fluid rounded shadow-lg"
+                 style="
+                    width: 100%;
+                    height: 500px;
+                    object-fit: cover;
+                 ">
+        </div>
+
+        <!-- TEXT -->
+        <div class="col-md-6 text-white">
+
+            <h2 class="font-weight-bold mb-4">
+                Trusted Auto Repair & Parts Shop
+            </h2>
+
+            <p class="mb-4 text-lg leading-relaxed">
+                Located in Carmen, Davao del Norte, our auto repair shop is dedicated
+                to providing reliable, affordable, and professional vehicle services.
+                We specialize in repairing and maintaining different types of vehicles
+                including cars, vans, pickups, trucks, and other utility vehicles.
+            </p>
+
+            <p class="mb-4 text-lg leading-relaxed">
+                With years of hands-on experience, our team focuses on quality
+                workmanship, honest service, and customer satisfaction. From basic
+                maintenance to major engine and mechanical repairs, we make sure every
+                vehicle is properly diagnosed and repaired with care and precision.
+            </p>
+
+            <p class="text-lg leading-relaxed">
+                Aside from repair services, we also offer quality automotive parts and
+                accessories to help keep your vehicle running smoothly and safely.
+                Our goal is to become the trusted go-to auto shop for drivers in
+                Carmen and nearby areas.
+            </p>
+
+        </div>
+
     </div>
 
 </section>
@@ -86,15 +112,118 @@
          class="container py-5"
          style="min-height: 100vh;">
 
-    <h1 class="font-weight-bold mb-4 text-white text-center text-4xl">
-        Services
+    <h1 class="font-weight-bold mb-5 text-white text-center text-4xl">
+        Our Services
     </h1>
 
-    <p class="text-white">
-        Put your services here.
-    </p>
+    <div class="row">
 
-    
+        <!-- SERVICE 1 -->
+        <div class="col-md-4 mb-4">
+            <div class="bg-dark text-white p-4 rounded shadow-lg h-100">
+
+                <h3 class="font-weight-bold mb-3">
+                    Vehicle Repair
+                </h3>
+
+                <p>
+                    We repair various types of vehicles including cars,
+                    vans, pickups, SUVs, and trucks. Our shop handles
+                    engine issues, suspension problems, brake repairs,
+                    electrical troubleshooting, and more.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- SERVICE 2 -->
+        <div class="col-md-4 mb-4">
+            <div class="bg-dark text-white p-4 rounded shadow-lg h-100">
+
+                <h3 class="font-weight-bold mb-3">
+                    Preventive Maintenance
+                </h3>
+
+                <p>
+                    Keep your vehicle in top condition with our preventive
+                    maintenance services such as oil changes, tune-ups,
+                    fluid replacement, battery checks, and regular inspections
+                    to avoid costly repairs.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- SERVICE 3 -->
+        <div class="col-md-4 mb-4">
+            <div class="bg-dark text-white p-4 rounded shadow-lg h-100">
+
+                <h3 class="font-weight-bold mb-3">
+                    Auto Parts Supply
+                </h3>
+
+                <p>
+                    We also sell quality automotive parts and accessories
+                    for different vehicle models. Whether you need replacement
+                    parts, engine components, brake parts, or maintenance items,
+                    we’ve got you covered.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- SERVICE 4 -->
+        <div class="col-md-4 mb-4">
+            <div class="bg-dark text-white p-4 rounded shadow-lg h-100">
+
+                <h3 class="font-weight-bold mb-3">
+                    Engine Diagnostics
+                </h3>
+
+                <p>
+                    Our diagnostic services help identify engine and system
+                    problems quickly and accurately, allowing us to provide
+                    efficient repair solutions for your vehicle.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- SERVICE 5 -->
+        <div class="col-md-4 mb-4">
+            <div class="bg-dark text-white p-4 rounded shadow-lg h-100">
+
+                <h3 class="font-weight-bold mb-3">
+                    Brake & Suspension
+                </h3>
+
+                <p>
+                    We provide brake inspections, brake pad replacement,
+                    suspension repairs, wheel checks, and steering system
+                    maintenance to ensure safety and smooth driving.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- SERVICE 6 -->
+        <div class="col-md-4 mb-4">
+            <div class="bg-dark text-white p-4 rounded shadow-lg h-100">
+
+                <h3 class="font-weight-bold mb-3">
+                    Customer Support
+                </h3>
+
+                <p>
+                    We believe in honest communication, fair pricing,
+                    and dependable service. Our team is always ready to
+                    assist customers with vehicle concerns and repair advice.
+                </p>
+
+            </div>
+        </div>
+
+    </div>
 
 </section>
 

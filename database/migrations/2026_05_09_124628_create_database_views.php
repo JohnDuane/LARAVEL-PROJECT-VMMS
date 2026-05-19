@@ -7,8 +7,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        DB::statement('DROP VIEW IF EXISTS view_customer_vehicles');
         DB::statement("
-            CREATE OR REPLACE VIEW view_customer_vehicles AS
+            CREATE VIEW view_customer_vehicles AS
             SELECT
                 customer.id AS customer_id,
                 customer.first_name,
@@ -23,8 +24,9 @@ return new class extends Migration
                 ON customer.id = vehicle.customer_id
         ");
 
+        DB::statement('DROP VIEW IF EXISTS view_joborder_parts');
         DB::statement("
-            CREATE OR REPLACE VIEW view_joborder_parts AS
+            CREATE VIEW view_joborder_parts AS
             SELECT
                 jo.job_order_id,
                 p.part_name,
@@ -36,18 +38,15 @@ return new class extends Migration
                 ON jp.part_id = p.part_id
         ");
 
+        DB::statement('DROP VIEW IF EXISTS view_job_order');
         DB::statement("
-            CREATE OR REPLACE VIEW view_job_order AS
+            CREATE VIEW view_job_order AS
             SELECT
                 jo.job_order_id,
 
-                CONCAT(
-                    c.first_name,
-                    ' ',
-                    COALESCE(c.middle_name, ''),
-                    ' ',
-                    c.last_name
-                ) AS cust_name,
+                c.first_name || ' ' ||
+                COALESCE(c.middle_name, '') || ' ' ||
+                c.last_name AS cust_name,
 
                 v.plate_number,
                 s.staff_name AS mechanic_name,
@@ -69,8 +68,9 @@ return new class extends Migration
                 ON jo.staff_id = s.staff_id
         ");
 
+        DB::statement('DROP VIEW IF EXISTS view_part_stock');
         DB::statement("
-            CREATE OR REPLACE VIEW view_part_stock AS
+            CREATE VIEW view_part_stock AS
             SELECT
                 p.part_id,
                 p.part_name,

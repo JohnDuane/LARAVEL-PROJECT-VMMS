@@ -78,6 +78,16 @@
       Sign in
     </button>
 
+    <div class="text-center mt-4">
+        <p class="text-sm text-white/80">
+            Don't have an account?
+            <a href="{{ route('register') }}" 
+              class="text-orange-300 hover:underline font-semibold">
+              Sign Up
+            </a>
+        </p>
+    </div>
+
 
 
 </form>
